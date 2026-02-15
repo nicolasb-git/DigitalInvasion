@@ -51,7 +51,7 @@ export class Tower {
             heavy: { range: 200, damage: 70, cooldown: 80, cost: 500, color: '#ff0000', bulletSpeed: 8 },
             firewall: { range: 0, damage: 0, cooldown: 1, cost: 10, color: '#4a4e69', bulletSpeed: 0 },
             jammer: { range: 120, damage: 0, cooldown: 1, cost: 150, color: '#ffd700', bulletSpeed: 0 },
-            ram_generator: { range: 0, damage: 3, cooldown: 60, cost: 300, color: '#00d2ff', bulletSpeed: 0 }
+            ram_generator: { range: 0, damage: 2, cooldown: 60, cost: 300, color: '#00d2ff', bulletSpeed: 0 }
         };
 
         const config = configs[type];
