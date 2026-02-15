@@ -7,6 +7,7 @@ export class Enemy {
         this.type = type;
         this.isBoss = type === 'boss';
         this.isResistant = type === 'resistant';
+        this.isQuick = type === 'quick';
 
         this.pos = new Vector(path[0].x * 40 + 20, path[0].y * 40 + 20);
         this.target = new Vector(path[1].x * 40 + 20, path[1].y * 40 + 20);
@@ -25,6 +26,12 @@ export class Enemy {
             this.color = '#00f2ff'; // Data Cyan
             this.radius = 15;
             this.reward = (10 + level) * 6;
+        } else if (this.isQuick) {
+            hpMult = 0.8;
+            speedMult = 2.5;
+            this.color = '#ff00ff'; // Nitro Magenta
+            this.radius = 10;
+            this.reward = (10 + level) * 4;
         } else {
             this.color = '#ff0000'; // Virus Red
             this.radius = 12;

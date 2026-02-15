@@ -289,7 +289,12 @@ class Game {
     const count = 5 + this.wave * 2;
     const interval = setInterval(() => {
       this.totalThreatsSpawned++;
-      const type = (this.totalThreatsSpawned % 10 === 0) ? 'resistant' : 'standard';
+      let type = 'standard';
+      if (this.totalThreatsSpawned % 20 === 0) {
+        type = 'quick';
+      } else if (this.totalThreatsSpawned % 10 === 0) {
+        type = 'resistant';
+      }
       this.enemies.push(new Enemy(this.currentPath, this.wave, type));
       spawned++;
       if (spawned >= count) {
