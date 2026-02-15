@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cyber War - Threats Control</title>
+  <meta name="description" content="A dynamic tower defense game with custom path building and premium aesthetics." />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Rajdhani:wght@400;600&display=swap"
+    rel="stylesheet">
+</head>
+
+<body>
+  <div id="ui-overlay">
+    <div id="top-bar">
+      <div class="stat-item">
+        <span class="label">MEMORY:</span>
+        <span id="credits" class="value">500</span>
+      </div>
+      <div class="stat-item">
+        <span class="label">WAVE:</span>
+        <span id="wave" class="value">1</span>
+      </div>
+      <div class="stat-item">
+        <span class="label">INTEGRITY:</span>
+        <span id="lives" class="value">20</span>
+      </div>
+      <div id="speed-control">
+        <div class="controls-row">
+          <div id="btn-speed" class="speed-btn">
+            <span class="speed-icon">⏩</span>
+            <span class="label" id="speed-label">SPEED: x1</span>
+          </div>
+          <div id="btn-pause" class="speed-btn pause-btn">
+            <span class="speed-icon" id="pause-icon">⏸</span>
+            <span class="label" id="pause-label">PAUSE</span>
+          </div>
+        </div>
+        <span class="speed-hint">L-Click: + | R-Click: -</span>
+      </div>
+    </div>
+
+    <div id="game-container">
+      <canvas id="game-canvas"></canvas>
+    </div>
+
+    <div id="bottom-bar">
+      <div class="toolbar">
+        <div class="tower-btn active" id="btn-basic" data-tower="basic">
+          <span class="tower-icon">⬢</span>
+          <span class="tower-name">Packet Filter</span>
+          <span class="tower-cost">100MB</span>
+        </div>
+        <div class="tower-btn" id="btn-fast" data-tower="fast">
+          <span class="tower-icon">✦</span>
+          <span class="tower-name">Scan Decryptor</span>
+          <span class="tower-cost">250MB</span>
+        </div>
+        <div class="tower-btn" id="btn-heavy" data-tower="heavy">
+          <span class="tower-icon">◆</span>
+          <span class="tower-name">Logic Bomb</span>
+          <span class="tower-cost">500MB</span>
+        </div>
+      </div>
+    </div>
+
+    <div id="selection-overlay" class="hidden">
+      <div class="selection-card">
+        <h3 id="sel-tower-name">TOWER</h3>
+        <p id="sel-tower-stats">Range: 120 | Damage: 5</p>
+        <div class="selection-actions">
+          <button id="btn-confirm-sell" class="confirm-btn">SELL FOR <span id="sel-refund">$50</span></button>
+          <button id="btn-close-sel" class="close-btn">CANCEL</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="message-overlay" class="hidden">
+      <h2 id="message-text">WAVE STARTING</h2>
+    </div>
+  </div>
+  <script type="module" src="/src/main.js"></script>
+</body>
+
+</html>
