@@ -64,9 +64,21 @@ body {
 }
 
 .stat-item .value {
-  font-size: 1.8rem;
+  font-size: 1.5rem;
   font-weight: 700;
-  text-shadow: 0 0 10px var(--primary);
+  color: var(--primary);
+  text-shadow: 0 0 10px rgba(0, 255, 65, 0.5);
+}
+
+#volume-slider {
+  width: 100px;
+  height: 4px;
+  background: var(--glass);
+  border-radius: 2px;
+  outline: none;
+  cursor: pointer;
+  accent-color: var(--primary);
+  margin-top: 0.5rem;
 }
 
 #speed-control {

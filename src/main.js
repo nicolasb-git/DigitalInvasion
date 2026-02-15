@@ -38,6 +38,7 @@ class Game {
     this.gameOver = false;
     this.isPaused = false;
 
+    this.initAudio();
     this.initUI();
     this.animate();
   }
@@ -113,6 +114,41 @@ class Game {
         document.getElementById('pause-icon').textContent = this.isPaused ? '▶' : '⏸';
       });
     }
+
+    const volumeSlider = document.getElementById('volume-slider');
+    if (volumeSlider) {
+      volumeSlider.addEventListener('input', (e) => {
+        const val = parseFloat(e.target.value);
+        this.bgMusic.volume = val;
+        this.sfxVolume = Math.min(1.0, val * 4);
+      });
+    }
+  }
+
+  initAudio() {
+    this.bgMusic = new Audio('/ici_storm.mp3');
+    this.bgMusic.loop = true;
+    this.bgMusic.volume = 0.05;
+
+    this.sfxVolume = 0.2;
+    this.sfxDestroySrc = '/wave1.wav';
+
+    // Browser policy: start music on first interaction
+    const startMusic = () => {
+      this.bgMusic.play().catch(e => console.log("Autoplay blocked, waiting for interaction..."));
+      window.removeEventListener('click', startMusic);
+      window.removeEventListener('keydown', startMusic);
+    };
+    window.addEventListener('click', startMusic);
+    window.addEventListener('keydown', startMusic);
+  }
+
+  playSFX(src) {
+    const sound = new Audio(src);
+    sound.volume = this.sfxVolume;
+    sound.play().catch(e => {
+      console.warn("SFX playback failed:", e);
+    });
   }
 
   handleCanvasClick(e) {
@@ -242,6 +278,7 @@ class Game {
           // Spawn one boss after the regular wave
           setTimeout(() => {
             this.enemies.push(new Enemy(this.currentPath, this.wave, true));
+            this.playSFX(this.sfxDestroySrc);
             this.waveRunning = false;
           }, 2000);
         } else {

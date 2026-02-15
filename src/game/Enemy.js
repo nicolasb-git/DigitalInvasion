@@ -11,7 +11,7 @@ export class Enemy {
         this.target = new Vector(path[1].x * 40 + 20, path[1].y * 40 + 20);
 
         this.speed = (1 + (level * 0.2)) * (isBoss ? 0.6 : 1);
-        this.maxHealth = 20 * Math.pow(1.2, level - 1) * (isBoss ? 6 : 1);
+        this.maxHealth = 40 * Math.pow(1.2, level - 1) * (isBoss ? 5 : 1);
         this.health = this.maxHealth;
         this.radius = isBoss ? 20 : 12;
         this.reward = (10 + level) * (isBoss ? 5 : 1);
