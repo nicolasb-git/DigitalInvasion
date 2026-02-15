@@ -224,6 +224,22 @@ body {
   margin-bottom: 0.2rem;
 }
 
+#btn-basic .tower-icon {
+  color: #00ff41;
+}
+
+#btn-fast .tower-icon {
+  color: #bf00ff;
+}
+
+#btn-heavy .tower-icon {
+  color: #ff0000;
+}
+
+#btn-firewall .tower-icon {
+  color: #4a4e69;
+}
+
 .tower-name {
   font-size: 0.8rem;
   font-weight: 600;

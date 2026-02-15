@@ -48,14 +48,15 @@ export class Tower {
         const configs = {
             basic: { range: 120, damage: 5, cooldown: 30, cost: 100, color: '#00ff41', bulletSpeed: 10 },
             fast: { range: 150, damage: 4, cooldown: 10, cost: 250, color: '#bf00ff', bulletSpeed: 16 },
-            heavy: { range: 200, damage: 70, cooldown: 80, cost: 500, color: '#ff0000', bulletSpeed: 8 }
+            heavy: { range: 200, damage: 70, cooldown: 80, cost: 500, color: '#ff0000', bulletSpeed: 8 },
+            firewall: { range: 0, damage: 0, cooldown: 1, cost: 10, color: '#4a4e69', bulletSpeed: 0 }
         };
 
         const config = configs[type];
         this.range = config.range;
         this.damage = config.damage;
         this.cost = config.cost;
-        this.name = type === 'basic' ? 'Packet Filter' : type === 'fast' ? 'Scan Decryptor' : 'Logic Bomb';
+        this.name = type === 'basic' ? 'Packet Filter' : type === 'fast' ? 'Scan Decryptor' : type === 'heavy' ? 'Logic Bomb' : 'Firewall';
         this.cooldownMax = config.cooldown;
         this.cooldown = 0;
         this.color = config.color;
@@ -63,6 +64,7 @@ export class Tower {
     }
 
     update(enemies, projectiles) {
+        if (this.type === 'firewall') return;
         if (this.cooldown > 0) this.cooldown--;
 
         if (this.cooldown === 0) {
@@ -108,13 +110,16 @@ export class Tower {
             ctx.lineTo(this.pos.x + 18, this.pos.y + 12);
             ctx.lineTo(this.pos.x - 18, this.pos.y + 12);
             ctx.closePath();
-        } else {
+        } else if (this.type === 'heavy') {
             // Heavy: Diamond
             ctx.moveTo(this.pos.x, this.pos.y - 20);
             ctx.lineTo(this.pos.x + 20, this.pos.y);
             ctx.lineTo(this.pos.x, this.pos.y + 20);
             ctx.lineTo(this.pos.x - 20, this.pos.y);
             ctx.closePath();
+        } else if (this.type === 'firewall') {
+            // Firewall: Rectangular block
+            ctx.rect(this.pos.x - 18, this.pos.y - 18, 36, 36);
         }
 
         ctx.fillStyle = this.color;

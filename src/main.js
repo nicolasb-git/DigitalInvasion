@@ -180,7 +180,7 @@ class Game {
       }
     }
 
-    const costs = { basic: 100, fast: 250, heavy: 500 };
+    const costs = { basic: 100, fast: 250, heavy: 500, firewall: 10 };
     const cost = costs[this.selectedTowerType];
 
     if (this.credits < cost) return;
@@ -480,7 +480,7 @@ class Game {
       this.ctx.fillRect(this.mouse.x * TILE_SIZE, this.mouse.y * TILE_SIZE, TILE_SIZE, TILE_SIZE);
 
       // Draw range of selected tower
-      const configs = { basic: 120, fast: 150, heavy: 200 };
+      const configs = { basic: 120, fast: 150, heavy: 200, firewall: 0 };
       const range = configs[this.selectedTowerType];
       this.ctx.beginPath();
       this.ctx.arc(this.mouse.x * TILE_SIZE + TILE_SIZE / 2, this.mouse.y * TILE_SIZE + TILE_SIZE / 2, range, 0, Math.PI * 2);
