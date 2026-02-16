@@ -142,6 +142,15 @@ class Game {
       });
     }
 
+    const playerNameInput = document.getElementById('player-name');
+    if (playerNameInput) {
+      playerNameInput.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+          this.saveHighScore();
+        }
+      });
+    }
+
     const restartBtn = document.getElementById('btn-restart');
     if (restartBtn) {
       restartBtn.addEventListener('click', () => {
