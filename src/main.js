@@ -155,6 +155,13 @@ class Game {
         this.backToSplash();
       });
     }
+
+    const quitBtn = document.getElementById('btn-quit');
+    if (quitBtn) {
+      quitBtn.addEventListener('click', () => {
+        this.backToSplash();
+      });
+    }
   }
 
   startGame() {
@@ -223,6 +230,17 @@ class Game {
 
     this.sfxVolume = 0.2;
     this.sfxDestroySrc = '/wave1.wav';
+
+    // Start background music on first interaction (browser policy)
+    const startMusic = () => {
+      if (this.bgMusic.paused) {
+        this.bgMusic.play().catch(e => console.log("Autoplay blocked:", e));
+      }
+      window.removeEventListener('click', startMusic);
+      window.removeEventListener('keydown', startMusic);
+    };
+    window.addEventListener('click', startMusic);
+    window.addEventListener('keydown', startMusic);
   }
 
   playSFX(src) {

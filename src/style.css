@@ -400,6 +400,16 @@ body {
   box-shadow: 0 0 10px rgba(0, 242, 255, 0.2);
 }
 
+.quit-btn:hover {
+  border-color: var(--accent);
+  box-shadow: 0 0 10px rgba(255, 62, 62, 0.2);
+}
+
+.quit-btn:hover .label,
+.quit-btn:hover .speed-icon {
+  color: var(--accent);
+}
+
 .speed-btn .label {
   font-family: var(--font-header);
   font-size: 0.8rem;
