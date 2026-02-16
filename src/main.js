@@ -40,8 +40,10 @@ class Game {
     this.totalThreatsSpawned = 0;
 
     this.started = false;
+    this.highScores = JSON.parse(localStorage.getItem('digital_invasion_scores') || '[]');
     this.initAudio();
     this.initUI();
+    this.renderLeaderboard();
     this.animate();
   }
 
@@ -132,6 +134,13 @@ class Game {
         this.startGame();
       });
     }
+
+    const saveScoreBtn = document.getElementById('btn-save-score');
+    if (saveScoreBtn) {
+      saveScoreBtn.addEventListener('click', () => {
+        this.saveHighScore();
+      });
+    }
   }
 
   startGame() {
@@ -139,6 +148,54 @@ class Game {
     document.getElementById('splash-screen').classList.add('hidden');
     document.getElementById('ui-overlay').classList.add('visible');
     this.bgMusic.play().catch(e => console.log("Audio play failed:", e));
+  }
+
+  renderLeaderboard() {
+    const content = document.getElementById('leaderboard-content');
+    if (!content) return;
+
+    if (this.highScores.length === 0) {
+      content.innerHTML = '<div class="leaderboard-entry">NO RECORDS FOUND</div>';
+      return;
+    }
+
+    content.innerHTML = this.highScores.map(score => `
+      <div class="leaderboard-entry">
+        <span class="entry-name">${score.name.toUpperCase()}</span>
+        <span class="entry-score">WAVE ${score.wave}</span>
+      </div>
+    `).join('');
+
+    // Duplicate for infinite scroll if there are enough entries
+    if (this.highScores.length > 3) {
+      content.innerHTML += content.innerHTML;
+    }
+  }
+
+  handleGameOver() {
+    this.gameOver = true;
+    document.getElementById('final-wave').textContent = this.wave;
+    document.getElementById('name-input-overlay').classList.remove('hidden');
+  }
+
+  saveHighScore() {
+    const nameInput = document.getElementById('player-name');
+    const name = nameInput.value.trim() || 'UNKNOWN';
+
+    this.highScores.push({ name, wave: this.wave, date: Date.now() });
+    this.highScores.sort((a, b) => b.wave - a.wave);
+    this.highScores = this.highScores.slice(0, 10);
+
+    localStorage.setItem('digital_invasion_scores', JSON.stringify(this.highScores));
+
+    document.getElementById('name-input-overlay').classList.add('hidden');
+    this.renderLeaderboard();
+
+    this.showMessage("GAME OVER - CLICK TO RESTART", 0);
+    const overlay = document.getElementById('message-overlay');
+    overlay.onclick = () => {
+      this.reset();
+    };
   }
 
   initAudio() {
@@ -469,12 +526,7 @@ class Game {
           this.updateUI();
           if (this.lives <= 0) {
             this.lives = 0;
-            this.gameOver = true;
-            this.showMessage("GAME OVER - CLICK TO RESTART", 0);
-            const overlay = document.getElementById('message-overlay');
-            overlay.onclick = () => {
-              this.reset();
-            };
+            this.handleGameOver();
           }
         }
         this.enemies.splice(i, 1);

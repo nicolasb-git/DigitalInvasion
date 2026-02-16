@@ -176,6 +176,103 @@ body {
   animation: pulse 2s infinite;
 }
 
+#leaderboard {
+  width: 300px;
+  max-height: 150px;
+  border-top: 1px solid var(--glass-border);
+  padding-top: 1rem;
+  overflow: hidden;
+  opacity: 0;
+  animation: fadeIn 1s forwards 3.5s;
+}
+
+#leaderboard h3 {
+  font-family: var(--font-header);
+  font-size: 0.8rem;
+  color: var(--primary);
+  letter-spacing: 3px;
+  margin-bottom: 0.5rem;
+}
+
+#leaderboard-scroll {
+  height: 100px;
+  overflow: hidden;
+  position: relative;
+}
+
+#leaderboard-content {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  animation: scrollUp 10s linear infinite;
+}
+
+.leaderboard-entry {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.8rem;
+  font-family: var(--font-header);
+  color: var(--text);
+  border-bottom: 1px solid rgba(0, 255, 65, 0.1);
+  padding-bottom: 2px;
+}
+
+.entry-name {
+  color: var(--text);
+}
+
+.entry-score {
+  color: var(--primary);
+  font-weight: bold;
+}
+
+@keyframes scrollUp {
+  0% {
+    transform: translateY(0);
+  }
+
+  100% {
+    transform: translateY(-100%);
+  }
+}
+
+#leaderboard-scroll:hover #leaderboard-content {
+  animation-play-state: paused;
+}
+
+#name-input-overlay {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 200;
+  pointer-events: auto;
+}
+
+#name-input-overlay.hidden {
+  display: none;
+}
+
+.input-group {
+  margin-bottom: 1.5rem;
+}
+
+#player-name {
+  background: var(--bg-dark);
+  border: 1px solid var(--primary);
+  color: var(--primary);
+  font-family: var(--font-header);
+  padding: 0.8rem;
+  width: 100%;
+  text-align: center;
+  outline: none;
+  font-size: 1rem;
+}
+
+#player-name:focus {
+  box-shadow: 0 0 15px var(--primary);
+}
+
 .scanlines {
   position: relative;
   overflow: hidden;

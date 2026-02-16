@@ -22,6 +22,12 @@
         <div class="loading-progress"></div>
       </div>
       <button id="start-btn">INITIALIZE SYSTEM</button>
+      <div id="leaderboard">
+        <h3>TOP OPERATIVES</h3>
+        <div id="leaderboard-scroll">
+          <div id="leaderboard-content"></div>
+        </div>
+      </div>
       <p class="splash-hint">BRACE FOR DIGITAL INVASION</p>
     </div>
   </div>
@@ -110,6 +116,19 @@
 
     <div id="message-overlay" class="hidden">
       <h2 id="message-text">WAVE STARTING</h2>
+    </div>
+
+    <div id="name-input-overlay" class="hidden">
+      <div class="selection-card">
+        <h3>RECORD SAVED</h3>
+        <p>Your systems were breached at wave <span id="final-wave">0</span>.</p>
+        <div class="input-group">
+          <input type="text" id="player-name" placeholder="ENTER OPERATIVE NAME" maxlength="15">
+        </div>
+        <div class="selection-actions">
+          <button id="btn-save-score" class="confirm-btn">UPLOAD RECORD</button>
+        </div>
+      </div>
     </div>
   </div>
   <script type="module" src="/src/main.js"></script>
