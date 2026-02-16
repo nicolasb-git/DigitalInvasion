@@ -39,6 +39,7 @@ class Game {
     this.isPaused = false;
     this.totalThreatsSpawned = 0;
 
+    this.started = false;
     this.initAudio();
     this.initUI();
     this.animate();
@@ -77,7 +78,7 @@ class Game {
 
     // Wave button / Auto wave?
     setInterval(() => {
-      if (!this.waveRunning && this.enemies.length === 0 && !this.gameOver) {
+      if (this.started && !this.waveRunning && this.enemies.length === 0 && !this.gameOver) {
         this.startWave();
       }
     }, 5000);
@@ -124,6 +125,20 @@ class Game {
         this.sfxVolume = Math.min(1.0, val * 4);
       });
     }
+
+    const startBtn = document.getElementById('start-btn');
+    if (startBtn) {
+      startBtn.addEventListener('click', () => {
+        this.startGame();
+      });
+    }
+  }
+
+  startGame() {
+    this.started = true;
+    document.getElementById('splash-screen').classList.add('hidden');
+    document.getElementById('ui-overlay').classList.add('visible');
+    this.bgMusic.play().catch(e => console.log("Audio play failed:", e));
   }
 
   initAudio() {
@@ -133,15 +148,6 @@ class Game {
 
     this.sfxVolume = 0.2;
     this.sfxDestroySrc = '/wave1.wav';
-
-    // Browser policy: start music on first interaction
-    const startMusic = () => {
-      this.bgMusic.play().catch(e => console.log("Autoplay blocked, waiting for interaction..."));
-      window.removeEventListener('click', startMusic);
-      window.removeEventListener('keydown', startMusic);
-    };
-    window.addEventListener('click', startMusic);
-    window.addEventListener('keydown', startMusic);
   }
 
   playSFX(src) {
@@ -540,7 +546,7 @@ class Game {
   }
 
   animate() {
-    if (!this.isPaused) {
+    if (!this.isPaused && this.started) {
       for (let i = 0; i < this.gameSpeed; i++) {
         this.update();
       }

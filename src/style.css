@@ -31,6 +31,171 @@ body {
   align-items: center;
 }
 
+#splash-screen {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: url('/splash.png') no-repeat center center;
+  background-size: cover;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  transition: opacity 1s ease-out, visibility 1s;
+}
+
+#splash-screen.hidden {
+  opacity: 0;
+  visibility: hidden;
+}
+
+#splash-screen::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(circle, rgba(0, 5, 0, 0.4) 0%, rgba(0, 5, 0, 0.9) 100%);
+}
+
+.splash-content {
+  position: relative;
+  z-index: 1001;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2rem;
+}
+
+.splash-content h1 {
+  font-family: var(--font-header);
+  font-size: 5rem;
+  color: var(--primary);
+  text-shadow: 0 0 30px var(--primary);
+  letter-spacing: 15px;
+  animation: flicker 2s infinite;
+}
+
+.splash-content h2 {
+  font-family: var(--font-header);
+  font-size: 1.5rem;
+  color: var(--text);
+  letter-spacing: 8px;
+  opacity: 0.8;
+}
+
+@keyframes flicker {
+
+  0%,
+  18%,
+  22%,
+  25%,
+  53%,
+  57%,
+  100% {
+    opacity: 1;
+  }
+
+  20%,
+  24%,
+  55% {
+    opacity: 0.3;
+  }
+}
+
+.loading-bar {
+  width: 300px;
+  height: 4px;
+  background: var(--glass);
+  border: 1px solid var(--glass-border);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.loading-progress {
+  width: 0%;
+  height: 100%;
+  background: var(--primary);
+  box-shadow: 0 0 10px var(--primary);
+  animation: load 3s forwards cubic-bezier(0.445, 0.05, 0.55, 0.95);
+}
+
+@keyframes load {
+  0% {
+    width: 0%;
+  }
+
+  100% {
+    width: 100%;
+  }
+}
+
+#start-btn {
+  padding: 1.2rem 3rem;
+  font-family: var(--font-header);
+  font-size: 1.2rem;
+  background: transparent;
+  color: var(--primary);
+  border: 1px solid var(--primary);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  letter-spacing: 4px;
+  position: relative;
+  overflow: hidden;
+  opacity: 0;
+  animation: fadeIn 1s forwards 3s;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+#start-btn:hover {
+  background: var(--primary);
+  color: #000;
+  box-shadow: 0 0 30px var(--primary);
+}
+
+.splash-hint {
+  font-size: 0.8rem;
+  color: var(--primary);
+  opacity: 0.5;
+  letter-spacing: 2px;
+  animation: pulse 2s infinite;
+}
+
+.scanlines {
+  position: relative;
+  overflow: hidden;
+}
+
+.scanlines::after {
+  content: " ";
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.1) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.05), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.05));
+  z-index: 2;
+  background-size: 100% 4px, 3px 100%;
+  pointer-events: none;
+  opacity: 0.3;
+}
+
 #ui-overlay {
   position: absolute;
   top: 0;
@@ -40,6 +205,13 @@ body {
   display: flex;
   flex-direction: column;
   pointer-events: none;
+  opacity: 0;
+  transition: opacity 1s ease-in;
+}
+
+#ui-overlay.visible {
+  opacity: 1;
+  pointer-events: auto;
 }
 
 #top-bar {
