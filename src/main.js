@@ -80,7 +80,7 @@ class Game {
 
     // Wave button / Auto wave?
     setInterval(() => {
-      if (this.started && !this.waveRunning && this.enemies.length === 0 && !this.gameOver) {
+      if (this.started && !this.isPaused && !this.waveRunning && this.enemies.length === 0 && !this.gameOver) {
         this.startWave();
       }
     }, 5000);
@@ -436,6 +436,9 @@ class Game {
     const isBossWave = this.wave % 5 === 0;
     this.showMessage(isBossWave ? `BOSS WAVE ${this.wave}` : `WAVE ${this.wave}`);
 
+    let spawned = 0;
+    const count = 5 + this.wave * 2;
+
     const spawnOne = () => {
       this.totalThreatsSpawned++;
       let type = 'standard';
@@ -450,14 +453,21 @@ class Game {
 
     spawnOne(); // Spawn first enemy immediately
 
-    const interval = setInterval(() => {
+    if (this.spawnerInterval) clearInterval(this.spawnerInterval);
+    this.spawnerInterval = setInterval(() => {
+      if (this.isPaused) return;
       if (spawned >= count) {
-        clearInterval(interval);
+        clearInterval(this.spawnerInterval);
+        this.spawnerInterval = null;
         if (isBossWave) {
-          setTimeout(() => {
-            this.enemies.push(new Enemy(this.currentPath, this.wave, 'boss'));
-            this.playSFX(this.sfxDestroySrc);
+          if (this.bossTimeout) clearTimeout(this.bossTimeout);
+          this.bossTimeout = setTimeout(() => {
+            if (this.started) { // Ensure game hasn't been reset
+              this.enemies.push(new Enemy(this.currentPath, this.wave, 'boss'));
+              this.playSFX(this.sfxDestroySrc);
+            }
             this.waveRunning = false;
+            this.bossTimeout = null;
           }, 2000);
         } else {
           this.waveRunning = false;
@@ -504,6 +514,11 @@ class Game {
   reset() {
     this.grid = Array(ROWS).fill().map(() => Array(COLS).fill(0));
     this.initObstacles();
+    if (this.spawnerInterval) clearInterval(this.spawnerInterval);
+    if (this.bossTimeout) clearTimeout(this.bossTimeout);
+    this.spawnerInterval = null;
+    this.bossTimeout = null;
+
     this.enemies = [];
     this.towers = [];
     this.projectiles = [];
@@ -511,6 +526,13 @@ class Game {
     this.lives = 20;
     this.wave = 0;
     this.gameOver = false;
+    this.isPaused = false;
+    const pauseBtn = document.getElementById('btn-pause');
+    if (pauseBtn) {
+      pauseBtn.classList.remove('active');
+      document.getElementById('pause-label').textContent = 'PAUSE';
+      document.getElementById('pause-icon').textContent = '⏸';
+    }
     this.totalThreatsSpawned = 0;
     this.currentPath = findPath(this.start, this.end, this.grid, COLS, ROWS);
     this.updateUI();
