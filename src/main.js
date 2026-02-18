@@ -176,6 +176,17 @@ class Game {
         this.backToSplash();
       });
     }
+
+    // Close selection when clicking outside
+    document.addEventListener('click', (e) => {
+      if (!this.selectedTower) return;
+      const card = document.querySelector('.selection-card');
+      // If click is not inside the card AND not on the canvas, deselect
+      // (Canvas clicks are handled separately by handleCanvasClick)
+      if (card && !card.contains(e.target) && !this.canvas.contains(e.target)) {
+        this.deselectTower();
+      }
+    });
   }
 
   startGame() {
