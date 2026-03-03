@@ -513,8 +513,11 @@ body {
 .tower-btn.disabled {
   opacity: 0.3;
   filter: grayscale(1);
-  pointer-events: none;
   cursor: not-allowed;
+}
+
+.tower-btn.disabled.limited {
+  pointer-events: none;
 }
 
 .tower-btn.active {

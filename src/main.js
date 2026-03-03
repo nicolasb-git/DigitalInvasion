@@ -443,18 +443,13 @@ class Game {
 
     const upgradeBtn = document.getElementById('btn-upgrade');
     if (tower.isUpgradable() && tower.level < 3) {
-      const upgradeCost = tower.getUpgradeCost();
       upgradeBtn.classList.remove('hidden');
-      document.getElementById('upgrade-cost').textContent = upgradeCost;
-      if (this.credits < upgradeCost) {
-        upgradeBtn.classList.add('disabled');
-      } else {
-        upgradeBtn.classList.remove('disabled');
-      }
+      document.getElementById('upgrade-cost').textContent = tower.getUpgradeCost();
     } else {
       upgradeBtn.classList.add('hidden');
     }
 
+    this.updateUI(); // Ensure button states are correct
     document.getElementById('selection-overlay').classList.remove('hidden');
   }
 
@@ -549,20 +544,44 @@ class Game {
     document.getElementById('wave').textContent = this.wave;
     document.getElementById('lives').textContent = this.lives;
 
-    // Update RAM Generator button state
-    const ramBtn = document.getElementById('btn-ram');
-    if (ramBtn) {
-      const ramCount = this.towers.filter(t => t.type === 'ram_generator').length;
-      if (ramCount >= 5) {
-        ramBtn.classList.add('disabled');
-        // If it was selected, deselect it
-        if (this.selectedTowerType === 'ram_generator') {
+    // Update Tower Purchase Buttons
+    const costs = { basic: 100, fast: 250, heavy: 500, firewall: 10, jammer: 150, ram_generator: 300 };
+    const ramCount = this.towers.filter(t => t.type === 'ram_generator').length;
+
+    Object.keys(costs).forEach(type => {
+      const btn = document.querySelector(`.tower-btn[data-tower="${type}"]`);
+      if (!btn) return;
+
+      const cost = costs[type];
+      const isTooExpensive = this.credits < cost;
+      const isLimitReached = type === 'ram_generator' && ramCount >= 5;
+
+      if (isTooExpensive || isLimitReached) {
+        btn.classList.add('disabled');
+        btn.classList.toggle('limited', isLimitReached);
+        if (isLimitReached && this.selectedTowerType === type) {
+          // Switch priority if current selection becomes limited
           this.selectedTowerType = 'basic';
-          ramBtn.classList.remove('active');
+          btn.classList.remove('active');
           document.getElementById('btn-basic').classList.add('active');
         }
       } else {
-        ramBtn.classList.remove('disabled');
+        btn.classList.remove('disabled');
+        btn.classList.remove('limited');
+      }
+    });
+
+    // Update Upgrade Button in Selection Popup
+    if (this.selectedTower) {
+      const tower = this.selectedTower;
+      const upgradeBtn = document.getElementById('btn-upgrade');
+      if (tower.isUpgradable() && tower.level < 3) {
+        const upgradeCost = tower.getUpgradeCost();
+        if (this.credits < upgradeCost) {
+          upgradeBtn.classList.add('disabled');
+        } else {
+          upgradeBtn.classList.remove('disabled');
+        }
       }
     }
   }
