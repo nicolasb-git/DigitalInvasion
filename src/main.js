@@ -24,6 +24,7 @@ class Game {
     this.towers = [];
     this.projectiles = [];
     this.floatingTexts = [];
+    this.particles = [];
 
     this.credits = 500;
     this.lives = 20;
@@ -60,6 +61,7 @@ class Game {
     }
 
     this.floatingTexts = [];
+    this.particles = [];
 
     this.animate();
   }
@@ -613,6 +615,7 @@ class Game {
     this.towers = [];
     this.projectiles = [];
     this.floatingTexts = [];
+    this.particles = [];
     this.credits = 500;
     this.lives = 20;
     this.wave = 0;
@@ -625,6 +628,7 @@ class Game {
     this.currentPath = findPath(this.start, this.end, this.grid, COLS, ROWS);
     this.addRandomWalls(10);
     this.floatingTexts = [];
+    this.particles = [];
     this.updateUI();
     const overlay = document.getElementById('message-overlay');
     if (overlay) {
@@ -755,6 +759,21 @@ class Game {
           life: 60,
           color: '#00ff41'
         });
+
+        // Spawn Digital Debris
+        const pCount = e.isBoss ? 30 : 12;
+        for (let j = 0; j < pCount; j++) {
+          this.particles.push({
+            x: e.pos.x,
+            y: e.pos.y,
+            vx: (Math.random() - 0.5) * 4,
+            vy: (Math.random() - 0.5) * 4,
+            size: Math.random() * 4 + 2,
+            life: 40 + Math.random() * 20,
+            color: e.color
+          });
+        }
+
         this.enemies.splice(i, 1);
         this.updateUI();
       }
@@ -824,6 +843,17 @@ class Game {
       this.ctx.restore();
     });
 
+    // Draw Particles
+    this.particles.forEach(p => {
+      this.ctx.save();
+      this.ctx.fillStyle = p.color;
+      this.ctx.globalAlpha = p.life / 60;
+      this.ctx.shadowBlur = 5;
+      this.ctx.shadowColor = p.color;
+      this.ctx.fillRect(p.x - p.size / 2, p.y - p.size / 2, p.size, p.size);
+      this.ctx.restore();
+    });
+
     // Draw placement preview
     if (this.mouse.x !== -1 && this.mouse.y !== -1) {
       this.ctx.save();
@@ -873,6 +903,17 @@ class Game {
 
     if (this.screenShake > 0) this.screenShake--;
     if (this.glitchFlash > 0) this.glitchFlash--;
+
+    // Update Particles
+    for (let i = this.particles.length - 1; i >= 0; i--) {
+      const p = this.particles[i];
+      p.x += p.vx;
+      p.y += p.vy;
+      p.vx *= 0.95; // Friction
+      p.vy *= 0.95;
+      p.life -= 1;
+      if (p.life <= 0) this.particles.splice(i, 1);
+    }
   }
 }
 
