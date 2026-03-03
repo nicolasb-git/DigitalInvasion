@@ -9,12 +9,20 @@ export class Projectile {
         this.color = color;
         this.dead = false;
         this.radius = 4;
+        this.history = [];
+        this.maxHistory = 8;
     }
 
     update() {
         if (this.targetInstance.dead) {
             this.dead = true;
             return;
+        }
+
+        // Add current pos to history
+        this.history.push(new Vector(this.pos.x, this.pos.y));
+        if (this.history.length > this.maxHistory) {
+            this.history.shift();
         }
 
         const dir = this.targetInstance.pos.sub(this.pos).normalize();
@@ -28,12 +36,38 @@ export class Projectile {
 
     draw(ctx) {
         ctx.save();
+
+        // Draw trailing data stream
+        if (this.history.length > 1) {
+            ctx.beginPath();
+            ctx.moveTo(this.history[0].x, this.history[0].y);
+            for (let i = 1; i < this.history.length; i++) {
+                ctx.lineTo(this.history[i].x, this.history[i].y);
+            }
+            ctx.lineTo(this.pos.x, this.pos.y);
+            ctx.strokeStyle = this.color;
+            ctx.lineWidth = this.radius * 0.8;
+            ctx.lineCap = 'round';
+            ctx.lineJoin = 'round';
+            ctx.globalAlpha = 0.4;
+            ctx.stroke();
+        }
+
+        // Draw main head
         ctx.beginPath();
         ctx.arc(this.pos.x, this.pos.y, this.radius, 0, Math.PI * 2);
         ctx.fillStyle = this.color;
-        ctx.shadowBlur = 8;
+        ctx.globalAlpha = 1.0;
+        ctx.shadowBlur = 12;
         ctx.shadowColor = this.color;
         ctx.fill();
+
+        // Inner core
+        ctx.beginPath();
+        ctx.arc(this.pos.x, this.pos.y, this.radius * 0.5, 0, Math.PI * 2);
+        ctx.fillStyle = '#fff';
+        ctx.fill();
+
         ctx.restore();
     }
 }
