@@ -40,6 +40,8 @@ class Game {
     this.gameOver = false;
     this.isPaused = true;
     this.totalThreatsSpawned = 0;
+    this.screenShake = 0;
+    this.glitchFlash = 0;
 
     this.started = false;
     this.highScores = JSON.parse(localStorage.getItem('digital_invasion_scores') || '[]');
@@ -618,6 +620,8 @@ class Game {
     this.isPaused = true;
     this.updatePauseUI();
     this.totalThreatsSpawned = 0;
+    this.screenShake = 0;
+    this.glitchFlash = 0;
     this.currentPath = findPath(this.start, this.end, this.grid, COLS, ROWS);
     this.addRandomWalls(10);
     this.floatingTexts = [];
@@ -733,6 +737,8 @@ class Game {
         if (!this.gameOver) {
           const damage = e.isBoss ? 5 : 1;
           this.lives = Math.max(0, this.lives - damage);
+          this.screenShake = 15;
+          this.glitchFlash = 10;
           this.updateUI();
           if (this.lives <= 0) {
             this.lives = 0;
@@ -761,17 +767,18 @@ class Game {
       if (p.dead) this.projectiles.splice(i, 1);
     }
 
-    // Update Floating Texts
-    for (let i = this.floatingTexts.length - 1; i >= 0; i--) {
-      const ft = this.floatingTexts[i];
-      ft.y -= 0.5;
-      ft.life -= 1;
-      if (ft.life <= 0) this.floatingTexts.splice(i, 1);
-    }
+    this.updateVisuals();
   }
 
   draw() {
-    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+    this.ctx.save();
+    if (this.screenShake > 0) {
+      const sx = (Math.random() - 0.5) * this.screenShake;
+      const sy = (Math.random() - 0.5) * this.screenShake;
+      this.ctx.translate(sx, sy);
+    }
+
+    this.ctx.clearRect(-20, -20, this.canvas.width + 40, this.canvas.height + 40);
 
     this.drawGrid();
     this.drawPath();
@@ -833,6 +840,13 @@ class Game {
       this.ctx.stroke();
       this.ctx.restore();
     }
+
+    if (this.glitchFlash > 0) {
+      this.ctx.fillStyle = `rgba(255, 0, 0, ${this.glitchFlash * 0.03})`;
+      this.ctx.fillRect(-20, -20, this.canvas.width + 40, this.canvas.height + 40);
+    }
+
+    this.ctx.restore();
   }
 
   animate() {
@@ -840,9 +854,25 @@ class Game {
       for (let i = 0; i < this.gameSpeed; i++) {
         this.update();
       }
+    } else if (this.started) {
+      // Still update visual juice even when paused
+      this.updateVisuals();
     }
     this.draw();
     requestAnimationFrame(() => this.animate());
+  }
+
+  updateVisuals() {
+    // Update Floating Texts
+    for (let i = this.floatingTexts.length - 1; i >= 0; i--) {
+      const ft = this.floatingTexts[i];
+      ft.y -= 0.5;
+      ft.life -= 1;
+      if (ft.life <= 0) this.floatingTexts.splice(i, 1);
+    }
+
+    if (this.screenShake > 0) this.screenShake--;
+    if (this.glitchFlash > 0) this.glitchFlash--;
   }
 }
 
