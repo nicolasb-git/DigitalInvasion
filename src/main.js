@@ -726,7 +726,7 @@ class Game {
           y: t.pos.y - 20,
           text: `+${generated}MB`,
           life: 60,
-          color: '#00d2ff'
+          color: '#ffffff'
         });
         this.updateUI();
       }
@@ -757,7 +757,7 @@ class Game {
           y: e.pos.y,
           text: `+${e.reward}MB`,
           life: 60,
-          color: '#00ff41'
+          color: '#ffffff'
         });
 
         // Spawn Digital Debris
@@ -785,8 +785,6 @@ class Game {
       p.update();
       if (p.dead) this.projectiles.splice(i, 1);
     }
-
-    this.updateVisuals();
   }
 
   draw() {
@@ -833,13 +831,16 @@ class Game {
     // Draw Floating Texts
     this.floatingTexts.forEach(ft => {
       this.ctx.save();
-      this.ctx.font = 'bold 14px Orbitron';
+      const scale = 1 + (Math.sin(ft.life * 0.2) * 0.2);
+      this.ctx.translate(ft.x, ft.y);
+      this.ctx.scale(scale, scale);
+      this.ctx.font = 'bold 20px Orbitron';
       this.ctx.fillStyle = ft.color;
-      this.ctx.globalAlpha = ft.life / 60;
+      this.ctx.globalAlpha = Math.min(1, ft.life / 20); // Longer visible alpha
       this.ctx.textAlign = 'center';
-      this.ctx.shadowBlur = 5;
+      this.ctx.shadowBlur = 10;
       this.ctx.shadowColor = ft.color;
-      this.ctx.fillText(ft.text, ft.x, ft.y);
+      this.ctx.fillText(ft.text, 0, 0);
       this.ctx.restore();
     });
 
@@ -884,8 +885,8 @@ class Game {
       for (let i = 0; i < this.gameSpeed; i++) {
         this.update();
       }
-    } else if (this.started) {
-      // Still update visual juice even when paused
+    }
+    if (this.started) {
       this.updateVisuals();
     }
     this.draw();
@@ -896,7 +897,7 @@ class Game {
     // Update Floating Texts
     for (let i = this.floatingTexts.length - 1; i >= 0; i--) {
       const ft = this.floatingTexts[i];
-      ft.y -= 0.5;
+      ft.y -= 1.2; // Move faster
       ft.life -= 1;
       if (ft.life <= 0) this.floatingTexts.splice(i, 1);
     }
