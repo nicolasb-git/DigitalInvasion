@@ -32,6 +32,7 @@ class Game {
     this.selectedTowerType = 'basic';
     this.selectedTower = null;
     this.currentPath = findPath(this.start, this.end, this.grid, COLS, ROWS);
+    this.addRandomWalls(10);
 
     this.mouse = { x: -1, y: -1 };
     this.gameSpeed = 1;
@@ -59,12 +60,31 @@ class Game {
 
   initObstacles() {
     // Add some permanent obstacles to force a twisty path
-    // Wall 1
-    for (let y = 0; y < 11; y++) this.grid[y][4] = 1;
-    // Wall 2
-    for (let y = 4; y < ROWS; y++) this.grid[y][9] = 1;
-    // Wall 3
-    for (let y = 0; y < 11; y++) this.grid[y][14] = 1;
+    for (let y = 0; y < 11; y++) this.grid[y][4] = 1; // Wall 1
+    for (let y = 4; y < ROWS; y++) this.grid[y][9] = 1; // Wall 2
+    for (let y = 0; y < 11; y++) this.grid[y][14] = 1; // Wall 3
+  }
+
+  addRandomWalls(count) {
+    let added = 0;
+    const pathSet = new Set(this.currentPath.map(p => `${p.x},${p.y}`));
+
+    // Maximum attempts to avoid infinite loop
+    let attempts = 0;
+    while (added < count && attempts < 1000) {
+      attempts++;
+      const rx = Math.floor(Math.random() * COLS);
+      const ry = Math.floor(Math.random() * ROWS);
+      const key = `${rx},${ry}`;
+
+      if (this.grid[ry][rx] === 0 &&
+        !pathSet.has(key) &&
+        !(rx === this.start.x && ry === this.start.y) &&
+        !(rx === this.end.x && ry === this.end.y)) {
+        this.grid[ry][rx] = 1;
+        added++;
+      }
+    }
   }
 
   initUI() {
@@ -575,6 +595,7 @@ class Game {
     this.updatePauseUI();
     this.totalThreatsSpawned = 0;
     this.currentPath = findPath(this.start, this.end, this.grid, COLS, ROWS);
+    this.addRandomWalls(10);
     this.updateUI();
     const overlay = document.getElementById('message-overlay');
     if (overlay) {
