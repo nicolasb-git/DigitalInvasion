@@ -43,6 +43,7 @@ class Game {
     this.totalThreatsSpawned = 0;
     this.screenShake = 0;
     this.glitchFlash = 0;
+    this.showPath = true;
 
     this.started = false;
     this.highScores = JSON.parse(localStorage.getItem('digital_invasion_scores') || '[]');
@@ -232,10 +233,46 @@ class Game {
     document.addEventListener('click', (e) => {
       if (!this.selectedTower) return;
       const card = document.querySelector('.selection-card');
-      // If click is not inside the card AND not on the canvas, deselect
-      // (Canvas clicks are handled separately by handleCanvasClick)
       if (card && !card.contains(e.target) && !this.canvas.contains(e.target)) {
         this.deselectTower();
+      }
+    });
+
+    // Strategy Hotkeys
+    window.addEventListener('keydown', (e) => {
+      const key = e.key.toLowerCase();
+      const code = e.code;
+
+      // 1-6 for tower selection (DigitX is layout independent)
+      const towerCodes = ['Digit1', 'Digit2', 'Digit3', 'Digit4', 'Digit5', 'Digit6'];
+      const towerTypes = ['basic', 'fast', 'heavy', 'firewall', 'jammer', 'ram_generator'];
+
+      if (towerCodes.includes(code)) {
+        const index = towerCodes.indexOf(code);
+        const type = towerTypes[index];
+        const btn = document.querySelector(`.tower-btn[data-tower="${type}"]`);
+        if (btn && !btn.classList.contains('disabled')) {
+          this.deselectTower();
+          document.querySelectorAll('.tower-btn').forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          this.selectedTowerType = type;
+        }
+      }
+
+      // ESC to cancel/deselect
+      if (key === 'escape') {
+        this.deselectTower();
+      }
+
+      // P to Pause
+      if (key === 'p') {
+        this.isPaused = !this.isPaused;
+        this.updatePauseUI();
+      }
+
+      // G to toggle Path
+      if (key === 'g') {
+        this.showPath = !this.showPath;
       }
     });
   }
@@ -690,7 +727,7 @@ class Game {
   }
 
   drawPath() {
-    if (!this.currentPath) return;
+    if (!this.currentPath || !this.showPath) return;
 
     // Draw main path ghosting
     this.ctx.save();

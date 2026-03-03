@@ -77,6 +77,7 @@ Unlike traditional tower defense games with fixed lanes, Digital Invasion allows
 3. **Maintenance**: Click a deployed tower to open the **Selection Card**. From here, you can **Upgrade** the module or **Sell** it for 50% of the total investment.
 4. **Economy**: Earn Memory (MB) by destroying threats or using RAM Generators.
 5. **Speed Control**: Use the speed buttons (⏩/⏸) to manage the pace. Left-click to speed up, Right-click to slow down.
+6. **Keyboard Hotkeys**: Use keys `1-6` for tower selection, `P` for Pause, `G` for Ghost Path, and `ESC` for Cancel.
 
 ### Pro Tips
 - **Mazing**: Force enemies to walk through the longest possible path to maximize your towers' uptime.
