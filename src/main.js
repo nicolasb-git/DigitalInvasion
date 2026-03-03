@@ -37,13 +37,14 @@ class Game {
     this.mouse = { x: -1, y: -1 };
     this.gameSpeed = 1;
     this.gameOver = false;
-    this.isPaused = false;
+    this.isPaused = true;
     this.totalThreatsSpawned = 0;
 
     this.started = false;
     this.highScores = JSON.parse(localStorage.getItem('digital_invasion_scores') || '[]');
     this.initAudio();
     this.initUI();
+    this.updatePauseUI();
     this.renderLeaderboard();
 
     // Set dynamic versioning from Vite define
@@ -591,7 +592,7 @@ class Game {
     this.lives = 20;
     this.wave = 0;
     this.gameOver = false;
-    this.isPaused = false;
+    this.isPaused = true;
     this.updatePauseUI();
     this.totalThreatsSpawned = 0;
     this.currentPath = findPath(this.start, this.end, this.grid, COLS, ROWS);
