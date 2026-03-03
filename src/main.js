@@ -23,6 +23,7 @@ class Game {
     this.enemies = [];
     this.towers = [];
     this.projectiles = [];
+    this.floatingTexts = [];
 
     this.credits = 500;
     this.lives = 20;
@@ -55,6 +56,8 @@ class Game {
       console.log("System Version Initialized:", hash);
       versionEl.textContent = hash;
     }
+
+    this.floatingTexts = [];
 
     this.animate();
   }
@@ -607,6 +610,7 @@ class Game {
     this.enemies = [];
     this.towers = [];
     this.projectiles = [];
+    this.floatingTexts = [];
     this.credits = 500;
     this.lives = 20;
     this.wave = 0;
@@ -616,6 +620,7 @@ class Game {
     this.totalThreatsSpawned = 0;
     this.currentPath = findPath(this.start, this.end, this.grid, COLS, ROWS);
     this.addRandomWalls(10);
+    this.floatingTexts = [];
     this.updateUI();
     const overlay = document.getElementById('message-overlay');
     if (overlay) {
@@ -708,6 +713,13 @@ class Game {
       const generated = t.update(this.enemies, this.projectiles);
       if (generated > 0) {
         this.credits += generated;
+        this.floatingTexts.push({
+          x: t.pos.x,
+          y: t.pos.y - 20,
+          text: `+${generated}MB`,
+          life: 60,
+          color: '#00d2ff'
+        });
         this.updateUI();
       }
     });
@@ -730,6 +742,13 @@ class Game {
         this.enemies.splice(i, 1);
       } else if (e.dead) {
         this.credits += e.reward;
+        this.floatingTexts.push({
+          x: e.pos.x,
+          y: e.pos.y,
+          text: `+${e.reward}MB`,
+          life: 60,
+          color: '#00ff41'
+        });
         this.enemies.splice(i, 1);
         this.updateUI();
       }
@@ -740,6 +759,14 @@ class Game {
       const p = this.projectiles[i];
       p.update();
       if (p.dead) this.projectiles.splice(i, 1);
+    }
+
+    // Update Floating Texts
+    for (let i = this.floatingTexts.length - 1; i >= 0; i--) {
+      const ft = this.floatingTexts[i];
+      ft.y -= 0.5;
+      ft.life -= 1;
+      if (ft.life <= 0) this.floatingTexts.splice(i, 1);
     }
   }
 
@@ -776,6 +803,19 @@ class Game {
 
     // Draw Projectiles
     this.projectiles.forEach(p => p.draw(this.ctx));
+
+    // Draw Floating Texts
+    this.floatingTexts.forEach(ft => {
+      this.ctx.save();
+      this.ctx.font = 'bold 14px Orbitron';
+      this.ctx.fillStyle = ft.color;
+      this.ctx.globalAlpha = ft.life / 60;
+      this.ctx.textAlign = 'center';
+      this.ctx.shadowBlur = 5;
+      this.ctx.shadowColor = ft.color;
+      this.ctx.fillText(ft.text, ft.x, ft.y);
+      this.ctx.restore();
+    });
 
     // Draw placement preview
     if (this.mouse.x !== -1 && this.mouse.y !== -1) {
