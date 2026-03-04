@@ -28,6 +28,8 @@ class Game {
 
     this.credits = 500;
     this.lives = 20;
+    this.maxLives = 20;
+    this.previousLives = 20;
     this.wave = 0;
     this.waveRunning = false;
 
@@ -588,6 +590,24 @@ class Game {
     document.getElementById('wave').textContent = this.wave;
     document.getElementById('lives').textContent = this.lives;
 
+    // Update Integrity Bar
+    const barFill = document.getElementById('integrity-bar-fill');
+    if (barFill) {
+      const healthPercent = (this.lives / this.maxLives) * 100;
+      barFill.style.width = `${healthPercent}%`;
+
+      // Trigger glitch on damage
+      if (this.lives < this.previousLives) {
+        barFill.classList.add('glitch');
+        setTimeout(() => barFill.classList.remove('glitch'), 300);
+      }
+      this.previousLives = this.lives;
+
+      // Manage color states
+      barFill.classList.toggle('warning', healthPercent <= 60 && healthPercent > 25);
+      barFill.classList.toggle('danger', healthPercent <= 25);
+    }
+
     // Update Tower Purchase Buttons
     const costs = { basic: 100, fast: 250, heavy: 500, firewall: 10, jammer: 150, ram_generator: 300 };
     const ramCount = this.towers.filter(t => t.type === 'ram_generator').length;
@@ -655,6 +675,8 @@ class Game {
     this.particles = [];
     this.credits = 500;
     this.lives = 20;
+    this.maxLives = 20;
+    this.previousLives = 20;
     this.wave = 0;
     this.gameOver = false;
     this.isPaused = true;
