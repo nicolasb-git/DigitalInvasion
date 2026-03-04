@@ -67,6 +67,7 @@ class Game {
     this.floatingTexts = [];
     this.particles = [];
 
+    this.initDigitalRain();
     this.animate();
   }
 
@@ -379,7 +380,7 @@ class Game {
     // Start background music on first interaction (browser policy)
     const startMusic = () => {
       if (this.bgMusic.paused) {
-        this.bgMusic.play().catch(e => console.log("Autoplay blocked:", e));
+        this.bgMusic.play().catch(e => console.log("Audio play failed:", e));
       }
       window.removeEventListener('click', startMusic);
       window.removeEventListener('keydown', startMusic);
@@ -980,6 +981,8 @@ class Game {
   }
 
   animate() {
+    this.updateDigitalRain();
+
     if (!this.isPaused && this.started) {
       for (let i = 0; i < this.gameSpeed; i++) {
         this.update();
@@ -990,6 +993,44 @@ class Game {
     }
     this.draw();
     requestAnimationFrame(() => this.animate());
+  }
+
+  initDigitalRain() {
+    this.bgCanvas = document.getElementById('bg-rain');
+    this.bgCtx = this.bgCanvas.getContext('2d');
+    this.fontSize = 16;
+    this.rainChars = "01ABCDEFGHIJKLMNOPQRSTUVWXYZ@#$%&*".split("");
+    this.resizeBg();
+    window.addEventListener('resize', () => this.resizeBg());
+  }
+
+  resizeBg() {
+    this.bgCanvas.width = window.innerWidth;
+    this.bgCanvas.height = window.innerHeight;
+    this.bgColumns = Math.floor(this.bgCanvas.width / this.fontSize);
+    this.bgDrops = [];
+    for (let x = 0; x < this.bgColumns; x++) {
+      this.bgDrops[x] = Math.random() * -100;
+    }
+  }
+
+  updateDigitalRain() {
+    if (!this.bgCtx) return;
+    this.bgCtx.fillStyle = 'rgba(0, 0, 0, 0.15)';
+    this.bgCtx.fillRect(0, 0, this.bgCanvas.width, this.bgCanvas.height);
+
+    this.bgCtx.fillStyle = 'rgba(0, 255, 65, 0.25)';
+    this.bgCtx.font = `bold ${this.fontSize}px Rajdhani`;
+
+    for (let i = 0; i < this.bgDrops.length; i++) {
+      const text = this.rainChars[Math.floor(Math.random() * this.rainChars.length)];
+      this.bgCtx.fillText(text, i * this.fontSize, this.bgDrops[i] * this.fontSize);
+
+      if (this.bgDrops[i] * this.fontSize > this.bgCanvas.height && Math.random() > 0.975) {
+        this.bgDrops[i] = 0;
+      }
+      this.bgDrops[i] += 0.75; // Slower, more atmospheric rain
+    }
   }
 
   updateVisuals() {
