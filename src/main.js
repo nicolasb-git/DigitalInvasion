@@ -46,6 +46,7 @@ class Game {
     this.screenShake = 0;
     this.glitchFlash = 0;
     this.showPath = true;
+    this.hoveredTower = null;
 
     this.started = false;
     this.highScores = JSON.parse(localStorage.getItem('digital_invasion_scores') || '[]');
@@ -113,10 +114,17 @@ class Game {
       const rect = this.canvas.getBoundingClientRect();
       this.mouse.x = Math.floor((e.clientX - rect.left) / TILE_SIZE);
       this.mouse.y = Math.floor((e.clientY - rect.top) / TILE_SIZE);
+
+      // Hover Intelligence
+      this.hoveredTower = this.towers.find(t =>
+        Math.floor(t.pos.x / TILE_SIZE) === this.mouse.x &&
+        Math.floor(t.pos.y / TILE_SIZE) === this.mouse.y
+      );
     });
     this.canvas.addEventListener('mouseleave', () => {
       this.mouse.x = -1;
       this.mouse.y = -1;
+      this.hoveredTower = null;
     });
 
     // Wave button / Auto wave?
@@ -917,17 +925,35 @@ class Game {
     // Draw placement preview
     if (this.mouse.x !== -1 && this.mouse.y !== -1) {
       this.ctx.save();
-      this.ctx.fillStyle = 'rgba(255, 255, 255, 0.1)';
-      this.ctx.fillRect(this.mouse.x * TILE_SIZE, this.mouse.y * TILE_SIZE, TILE_SIZE, TILE_SIZE);
 
-      // Draw range of selected tower
-      const configs = { basic: 120, fast: 150, heavy: 200, firewall: 0, jammer: 120, ram_generator: 0 };
-      const range = configs[this.selectedTowerType];
-      this.ctx.beginPath();
-      this.ctx.arc(this.mouse.x * TILE_SIZE + TILE_SIZE / 2, this.mouse.y * TILE_SIZE + TILE_SIZE / 2, range, 0, Math.PI * 2);
-      this.ctx.strokeStyle = 'rgba(0, 242, 255, 0.2)';
-      this.ctx.lineWidth = 1;
-      this.ctx.stroke();
+      if (this.hoveredTower) {
+        // Draw range of hovered tower
+        this.ctx.beginPath();
+        this.ctx.arc(this.hoveredTower.pos.x, this.hoveredTower.pos.y, this.hoveredTower.range, 0, Math.PI * 2);
+        this.ctx.strokeStyle = 'rgba(255, 215, 0, 0.3)';
+        this.ctx.setLineDash([5, 5]);
+        this.ctx.stroke();
+        this.ctx.restore();
+
+        this.ctx.save();
+        // Draw simple hover info
+        this.ctx.font = '10px Orbitron';
+        this.ctx.fillStyle = '#fff';
+        this.ctx.textAlign = 'center';
+        this.ctx.fillText(`${this.hoveredTower.type.toUpperCase()} LVL:${this.hoveredTower.level}`, this.hoveredTower.pos.x, this.hoveredTower.pos.y - 30);
+      } else {
+        this.ctx.fillStyle = 'rgba(255, 255, 255, 0.1)';
+        this.ctx.fillRect(this.mouse.x * TILE_SIZE, this.mouse.y * TILE_SIZE, TILE_SIZE, TILE_SIZE);
+
+        // Draw range of selected tower
+        const configs = { basic: 120, fast: 150, heavy: 200, firewall: 0, jammer: 120, ram_generator: 0 };
+        const range = configs[this.selectedTowerType];
+        this.ctx.beginPath();
+        this.ctx.arc(this.mouse.x * TILE_SIZE + TILE_SIZE / 2, this.mouse.y * TILE_SIZE + TILE_SIZE / 2, range, 0, Math.PI * 2);
+        this.ctx.strokeStyle = 'rgba(0, 242, 255, 0.2)';
+        this.ctx.lineWidth = 1;
+        this.ctx.stroke();
+      }
       this.ctx.restore();
     }
 
