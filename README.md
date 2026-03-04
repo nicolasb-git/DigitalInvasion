@@ -83,10 +83,15 @@ Unlike traditional tower defense games with fixed lanes, Digital Invasion allows
 6. **Keyboard Hotkeys**: Use keys `1-6` for tower selection, `P` for Pause, `G` for Ghost Path, and `ESC` for Cancel.
 
 ### Pro Tips
-- **Mazing**: Force enemies to walk through the longest possible path to maximize your towers' uptime.
-- **Placement**: Place Jammers near groups of Logic Bombs to keep enemies in the high-damage zone longer.
-- **Memory Management**: Don't hoard Memory. Waves get progressively stronger; an idle balance is wasted defense.
 - **Deselection**: Click anywhere outside the selection card or press the "Cancel" button to close the tower popup.
+- **Visual Cues**: Keep an eye on the **System Integrity Bar** at the top. If it glitches red, you are nearing a total system breach!
+- **Inspection**: Hover over any tower on the grid to instantly see its **Range Circle** and current **Level** without needing to click it.
+
+### 🎨 Visual & Experience Polish
+- **Digital Rain**: A live-data stream background provides atmospheric immersion.
+- **Glitch Effects**: Integrity damage and system alerts trigger high-fidelity visual glitches.
+- **Dynamic HUD**: The integrity bar transitions from Green to Red as your system health fluctuates.
+- **Legendary Auras**: Max-level towers (Lvl 3) emit a pulsing data aura and rotating rings to signify their elite status.
 
 ---
 

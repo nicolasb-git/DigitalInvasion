@@ -108,6 +108,7 @@ export class Tower {
         this.color = config.color;
         this.bulletSpeed = config.bulletSpeed;
         this.buffedRange = this.range;
+        this.glowTimer = 0;
     }
 
     isUpgradable() {
@@ -148,6 +149,7 @@ export class Tower {
         if (this.cooldown === 0) {
             if (this.type === 'ram_generator') {
                 this.cooldown = this.cooldownMax;
+                this.glowTimer = 20; // Set glow effect duration
                 return this.damage; // Using damage field to store RAM amount for simplicity
             }
 
@@ -173,6 +175,9 @@ export class Tower {
                 this.cooldown = this.cooldownMax;
             }
         }
+
+        if (this.glowTimer > 0) this.glowTimer--;
+
         return 0;
     }
 
@@ -249,9 +254,18 @@ export class Tower {
         }
 
         ctx.fillStyle = this.color;
-        ctx.shadowBlur = 15;
+        ctx.shadowBlur = this.glowTimer > 0 ? 30 : 15;
         ctx.shadowColor = this.color;
         ctx.fill();
+
+        // Extra glow overlay for generation/action event
+        if (this.glowTimer > 0) {
+            ctx.shadowBlur = 0;
+            ctx.fillStyle = '#fff';
+            ctx.globalAlpha = this.glowTimer / 40;
+            ctx.fill();
+            ctx.globalAlpha = 1.0;
+        }
 
         if (this.type === 'ram_generator') {
             // Add chips and pins on top of the filled PCB

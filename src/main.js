@@ -813,13 +813,6 @@ class Game {
       const generated = t.update(this.enemies, this.projectiles);
       if (generated > 0) {
         this.credits += generated;
-        this.floatingTexts.push({
-          x: t.pos.x,
-          y: t.pos.y - 20,
-          text: `+${generated}MB`,
-          life: 60,
-          color: '#ffffff'
-        });
         this.updateUI();
       }
     });
