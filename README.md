@@ -50,6 +50,7 @@ Digital Invasion is a premium, high-stakes Tower Defense game with a cyber-secur
 Combat modules (**Packet Filter, Scan Decryptor, Logic Bomb**) can be upgraded twice:
 - **Level 2**: Costs **2x** base price. Increases damage by **+50%**.
 - **Level 3**: Costs **3x** Level 2 price (**6x** base). Increases damage by another **+50%**.
+- **Logic Overflow (Legendary Synergy)**: Level 3 towers gain a **+10% Range** bonus when placed adjacent to another Level 3 tower. Look for the pulsing **Data Aura** and rotating ring!
 - *Note: Upgrading is space-efficient but not cost-efficient. Use it when the grid is full!*
 
 ---

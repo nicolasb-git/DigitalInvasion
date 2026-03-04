@@ -107,6 +107,7 @@ export class Tower {
         this.cooldown = 0;
         this.color = config.color;
         this.bulletSpeed = config.bulletSpeed;
+        this.buffedRange = this.range;
     }
 
     isUpgradable() {
@@ -135,7 +136,7 @@ export class Tower {
 
         if (this.type === 'jammer') {
             for (const enemy of enemies) {
-                if (this.pos.dist(enemy.pos) < this.range) {
+                if (this.pos.dist(enemy.pos) < this.buffedRange) {
                     enemy.slowed = true;
                 }
             }
@@ -155,7 +156,7 @@ export class Tower {
 
             for (const enemy of enemies) {
                 const d = this.pos.dist(enemy.pos);
-                if (d < this.range && d < minDist) {
+                if (d < this.buffedRange && d < minDist) {
                     minDist = d;
                     nearest = enemy;
                 }
@@ -178,10 +179,37 @@ export class Tower {
     draw(ctx) {
         ctx.save();
 
+        // Draw "Logic Overflow" Aura for Level 3
+        if (this.level === 3) {
+            const time = Date.now() / 1000;
+            const pulse = (Math.sin(time * 3) + 1) / 2;
+
+            // Rotating outer ring
+            ctx.save();
+            ctx.translate(this.pos.x, this.pos.y);
+            ctx.rotate(time * 2);
+            ctx.beginPath();
+            ctx.arc(0, 0, 25, 0, Math.PI * 0.4);
+            ctx.strokeStyle = this.color;
+            ctx.lineWidth = 2;
+            ctx.stroke();
+            ctx.beginPath();
+            ctx.arc(0, 0, 25, Math.PI, Math.PI * 1.4);
+            ctx.stroke();
+            ctx.restore();
+
+            // Pulsing base aura
+            ctx.beginPath();
+            ctx.arc(this.pos.x, this.pos.y, 20 + pulse * 5, 0, Math.PI * 2);
+            ctx.fillStyle = this.color;
+            ctx.globalAlpha = 0.1 + (pulse * 0.1);
+            ctx.fill();
+        }
+
         // Draw range (subtle)
         ctx.beginPath();
-        ctx.arc(this.pos.x, this.pos.y, this.range, 0, Math.PI * 2);
-        ctx.strokeStyle = 'rgba(255, 255, 255, 0.05)';
+        ctx.arc(this.pos.x, this.pos.y, this.buffedRange, 0, Math.PI * 2);
+        ctx.strokeStyle = this.level === 3 ? 'rgba(255, 255, 255, 0.1)' : 'rgba(255, 255, 255, 0.05)';
         ctx.stroke();
 
         // Draw tower body

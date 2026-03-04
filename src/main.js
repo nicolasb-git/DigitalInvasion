@@ -477,20 +477,41 @@ class Game {
     // Update all enemy paths
     enemyPaths.forEach(({ enemy, path }) => enemy.setPath(path));
 
+    this.updateBuffs();
     this.updateUI();
+  }
+
+  updateBuffs() {
+    this.towers.forEach(t => t.buffedRange = t.range);
+
+    // Level 3 proximity bonus: +10% range if adjacent to another Level 3
+    this.towers.filter(t => t.level === 3).forEach(t1 => {
+      const hasLegendaryNeighbor = this.towers.some(t2 =>
+        t2 !== t1 && t2.level === 3 &&
+        Math.abs(t1.gridX - t2.gridX) <= 1 &&
+        Math.abs(t1.gridY - t2.gridY) <= 1
+      );
+      if (hasLegendaryNeighbor) {
+        t1.buffedRange = t1.range * 1.1;
+      }
+    });
   }
 
   selectTower(tower) {
     this.selectedTower = tower;
     document.getElementById('sel-tower-name').textContent = `${tower.name.toUpperCase()} (LVL ${tower.level})`;
 
-    let stats = `Range: ${tower.range} | Damage: ${tower.damage}`;
+    let stats = `Range: ${Math.floor(tower.buffedRange)} | Damage: ${tower.damage}`;
+    if (tower.buffedRange > tower.range) {
+      stats = `Range: ${Math.floor(tower.buffedRange)} (+10%) | Damage: ${tower.damage}`;
+    }
+
     if (tower.type === 'ram_generator') {
       stats = `Yield: ${tower.damage}MB/s`;
     } else if (tower.type === 'firewall') {
       stats = 'Passive Barrier';
     } else if (tower.type === 'jammer') {
-      stats = `Range: ${tower.range} | Slow: 50%`;
+      stats = `Range: ${Math.floor(tower.buffedRange)} | Slow: 50%`;
     }
 
     document.getElementById('sel-tower-stats').textContent = stats;
@@ -514,6 +535,7 @@ class Game {
     if (this.credits >= cost) {
       if (this.selectedTower.upgrade()) {
         this.credits -= cost;
+        this.updateBuffs();
         this.selectTower(this.selectedTower); // Refresh UI
         this.updateUI();
       }
