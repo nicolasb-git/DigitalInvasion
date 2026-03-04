@@ -59,6 +59,8 @@ Combat modules (**Packet Filter, Scan Decryptor, Logic Bomb**) can be upgraded t
 - **Virus Red (Standard)**: Basic entry-level malicious code.
 - **Data Cyan (Resistant)**: Encrypted threats with high integrity (HP) and lower speed.
 - **Nitro Magenta (Quick)**: Rapid-fire script kits. Hard to track, low HP.
+- **Zip Orange (Fragmenter)**: High computational density. Splinters into 3 tiny fragments when neutralized.
+- **White Bit (Fragment)**: Highly volatile micro-threats. Extremely fast, low HP.
 - **Toxic Yellow (Boss)**: Massive system-wide breaches. High HP, deals 5x damage to integrity. Spawns every 5 waves.
 
 ---

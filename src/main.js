@@ -557,9 +557,11 @@ class Game {
     const spawnOne = () => {
       this.totalThreatsSpawned++;
       let type = 'standard';
-      if (this.totalThreatsSpawned % 20 === 0) {
-        type = 'quick';
+      if (this.totalThreatsSpawned % 15 === 0) {
+        type = 'fragmenter';
       } else if (this.totalThreatsSpawned % 10 === 0) {
+        type = 'quick';
+      } else if (this.totalThreatsSpawned % 5 === 0) {
         type = 'resistant';
       }
       this.enemies.push(new Enemy(this.currentPath, this.wave, type));
@@ -826,6 +828,18 @@ class Game {
           life: 60,
           color: '#ffffff'
         });
+
+        // Special logic for Fragmenter split
+        if (e.isFragmenter) {
+          for (let j = 0; j < 3; j++) {
+            const fragment = new Enemy(e.path, this.wave, 'fragment');
+            // Start from current position and target
+            fragment.pos = new Vector(e.pos.x + (Math.random() - 0.5) * 10, e.pos.y + (Math.random() - 0.5) * 10);
+            fragment.gridPosIndex = e.gridPosIndex;
+            fragment.target = new Vector(e.target.x, e.target.y);
+            this.enemies.push(fragment);
+          }
+        }
 
         // Spawn Digital Debris
         const pCount = e.isBoss ? 30 : 12;

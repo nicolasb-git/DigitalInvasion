@@ -8,6 +8,8 @@ export class Enemy {
         this.isBoss = type === 'boss';
         this.isResistant = type === 'resistant';
         this.isQuick = type === 'quick';
+        this.isFragmenter = type === 'fragmenter';
+        this.isFragment = type === 'fragment';
 
         this.pos = new Vector(path[0].x * 40 + 20, path[0].y * 40 + 20);
         this.target = new Vector(path[1].x * 40 + 20, path[1].y * 40 + 20);
@@ -32,6 +34,18 @@ export class Enemy {
             this.color = '#ff00ff'; // Nitro Magenta
             this.radius = 10;
             this.reward = (10 + level) * 4;
+        } else if (this.isFragmenter) {
+            hpMult = 1.2;
+            speedMult = 1.0;
+            this.color = '#ff9d00'; // Zip Orange
+            this.radius = 14;
+            this.reward = (10 + level) * 5;
+        } else if (this.isFragment) {
+            hpMult = 0.2;
+            speedMult = 3.5;
+            this.color = '#ffffff'; // White Fragment
+            this.radius = 6;
+            this.reward = (10 + level) * 1;
         } else {
             this.color = '#ff0000'; // Virus Red
             this.radius = 12;
