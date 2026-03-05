@@ -108,6 +108,7 @@ export class Tower {
         this.color = config.color;
         this.bulletSpeed = config.bulletSpeed;
         this.buffedRange = this.range;
+        this.synergyActive = false; // New flag for visual synergy feedback
         this.glowTimer = 0;
     }
 
@@ -184,8 +185,8 @@ export class Tower {
     draw(ctx) {
         ctx.save();
 
-        // Draw "Logic Overflow" Aura for Level 3
-        if (this.level === 3) {
+        // Draw "Logic Overflow" Aura for Level 3 (Only when synergy is active)
+        if (this.level === 3 && this.synergyActive) {
             const time = Date.now() / 1000;
             const pulse = (Math.sin(time * 3) + 1) / 2;
 

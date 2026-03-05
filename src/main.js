@@ -482,7 +482,10 @@ class Game {
   }
 
   updateBuffs() {
-    this.towers.forEach(t => t.buffedRange = t.range);
+    this.towers.forEach(t => {
+      t.buffedRange = t.range;
+      t.synergyActive = false;
+    });
 
     // Level 3 proximity bonus: +10% range if adjacent to another Level 3
     this.towers.filter(t => t.level === 3).forEach(t1 => {
@@ -493,6 +496,7 @@ class Game {
       );
       if (hasLegendaryNeighbor) {
         t1.buffedRange = t1.range * 1.1;
+        t1.synergyActive = true;
       }
     });
   }
@@ -558,6 +562,8 @@ class Game {
 
     // Remove from towers array
     this.towers = this.towers.filter(t => t !== this.selectedTower);
+
+    this.updateBuffs();
 
     // Update path (in case removing a tower opens a better path)
     this.currentPath = findPath(this.start, this.end, this.grid, COLS, ROWS);
