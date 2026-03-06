@@ -101,12 +101,30 @@ class Game {
   }
 
   initUI() {
+    const tooltip = document.getElementById('tooltip');
     document.querySelectorAll('.tower-btn').forEach(btn => {
       btn.addEventListener('click', () => {
         this.deselectTower();
         document.querySelectorAll('.tower-btn').forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
         this.selectedTowerType = btn.dataset.tower;
+      });
+
+      btn.addEventListener('mouseenter', (e) => {
+        const text = btn.getAttribute('data-tooltip');
+        if (text) {
+          tooltip.textContent = text;
+          tooltip.classList.remove('hidden');
+        }
+      });
+
+      btn.addEventListener('mousemove', (e) => {
+        tooltip.style.left = e.clientX + 'px';
+        tooltip.style.top = (e.clientY - 10) + 'px';
+      });
+
+      btn.addEventListener('mouseleave', () => {
+        tooltip.classList.add('hidden');
       });
     });
 

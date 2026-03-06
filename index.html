@@ -85,38 +85,46 @@
 
     <div id="bottom-bar">
       <div class="toolbar">
-        <div class="tower-btn active" id="btn-basic" data-tower="basic">
+        <div class="tower-btn active" id="btn-basic" data-tower="basic"
+          data-tooltip="Standard defense module. Balanced range and fire rate.">
           <span class="tower-icon">⬢</span>
           <span class="tower-name">Packet Filter</span>
           <span class="tower-cost">100MB</span>
         </div>
-        <div class="tower-btn" id="btn-fast" data-tower="fast">
+        <div class="tower-btn" id="btn-fast" data-tower="fast"
+          data-tooltip="High-frequency scanning. Rapid fire but lower damage.">
           <span class="tower-icon">✦</span>
           <span class="tower-name">Scan Decryptor</span>
           <span class="tower-cost">250MB</span>
         </div>
-        <div class="tower-btn" id="btn-heavy" data-tower="heavy">
+        <div class="tower-btn" id="btn-heavy" data-tower="heavy"
+          data-tooltip="High-impact explosive. Massive damage, long recharge.">
           <span class="tower-icon">◆</span>
           <span class="tower-name">Logic Bomb</span>
           <span class="tower-cost">500MB</span>
         </div>
-        <div class="tower-btn" id="btn-firewall" data-tower="firewall">
+        <div class="tower-btn" id="btn-firewall" data-tower="firewall"
+          data-tooltip="Static barrier. Reroutes threats through system subnets.">
           <span class="tower-icon">■</span>
           <span class="tower-name">Firewall</span>
           <span class="tower-cost">10MB</span>
         </div>
-        <div class="tower-btn" id="btn-jammer" data-tower="jammer">
+        <div class="tower-btn" id="btn-jammer" data-tower="jammer"
+          data-tooltip="Electronic warfare. Emits signals that slow all nearby threats.">
           <span class="tower-icon">📡</span>
           <span class="tower-name">Jammer</span>
           <span class="tower-cost">150MB</span>
         </div>
-        <div class="tower-btn" id="btn-ram" data-tower="ram_generator">
+        <div class="tower-btn" id="btn-ram" data-tower="ram_generator"
+          data-tooltip="Resource optimization. Periodically generates System Memory (Max 5).">
           <span class="tower-icon">📟</span>
           <span class="tower-name">RAM Gen</span>
           <span class="tower-cost">300MB</span>
         </div>
       </div>
     </div>
+
+    <div id="tooltip" class="hidden"></div>
 
     <div id="selection-overlay" class="hidden">
       <div class="selection-card">

@@ -600,9 +600,6 @@ body {
   cursor: not-allowed;
 }
 
-.tower-btn.disabled.limited {
-  pointer-events: none;
-}
 
 .tower-btn.active {
   opacity: 1;
@@ -901,4 +898,24 @@ body {
 .manual-btn:hover .label,
 .manual-btn:hover .speed-icon {
   color: #00d2ff;
+}
+
+#tooltip {
+  position: fixed;
+  padding: 10px 14px;
+  background: rgba(0, 5, 0, 0.95);
+  backdrop-filter: blur(8px);
+  border: 1px solid var(--primary);
+  color: var(--primary);
+  font-family: var(--font-main);
+  font-size: 0.85rem;
+  border-radius: 4px;
+  pointer-events: none;
+  z-index: 2000;
+  max-width: 250px;
+  box-shadow: 0 0 20px rgba(0, 255, 65, 0.15);
+  transition: opacity 0.1s ease;
+  line-height: 1.4;
+  text-align: center;
+  transform: translate(-50%, -110%);
 }
