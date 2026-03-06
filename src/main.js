@@ -162,11 +162,32 @@ class Game {
         Math.floor(t.pos.x / TILE_SIZE) === this.mouse.x &&
         Math.floor(t.pos.y / TILE_SIZE) === this.mouse.y
       );
+
+      if (this.hoveredTower) {
+        const t = this.hoveredTower;
+        let info = `${t.name} (LVL ${t.level}) | Damage: ${t.damage} | Range: ${Math.floor(t.buffedRange)}`;
+        if (t.type === 'ram_generator') {
+          info = `${t.name} | Yield: ${t.damage}MB/cycle`;
+        } else if (t.type === 'jammer') {
+          info = `${t.name} | Slow: 50% | Range: ${Math.floor(t.buffedRange)}`;
+        }
+
+        tooltip.textContent = info;
+        tooltip.classList.remove('hidden');
+        updateTooltipPosition(e);
+      } else {
+        // Only hide if we're not hovering over a [data-tooltip] element
+        // (Though canvas doesn't have those, this is safer)
+        if (!e.target.hasAttribute('data-tooltip')) {
+          tooltip.classList.add('hidden');
+        }
+      }
     });
     this.canvas.addEventListener('mouseleave', () => {
       this.mouse.x = -1;
       this.mouse.y = -1;
       this.hoveredTower = null;
+      tooltip.classList.add('hidden');
     });
 
     // Wave button / Auto wave?
