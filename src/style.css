@@ -476,13 +476,6 @@ body {
   color: var(--accent);
 }
 
-.speed-hint {
-  font-size: 0.6rem;
-  opacity: 0.5;
-  color: var(--primary);
-  letter-spacing: 1px;
-}
-
 .speed-btn {
   padding: 0.5rem 1rem;
   background: var(--glass);

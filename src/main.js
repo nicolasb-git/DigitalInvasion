@@ -102,29 +102,52 @@ class Game {
 
   initUI() {
     const tooltip = document.getElementById('tooltip');
+
+    const updateTooltipPosition = (e) => {
+      const padding = 15;
+      let x = e.clientX;
+      let y = e.clientY;
+
+      // Vertical intelligence: Flip tooltip below cursor if hovering over top-tier elements
+      if (y < 120) {
+        tooltip.style.transform = 'translate(-50%, 20px)';
+      } else {
+        tooltip.style.transform = 'translate(-50%, -110%)';
+      }
+
+      // Horizontal intelligence: Clamp to viewport boundaries
+      const rect = tooltip.getBoundingClientRect();
+      const halfWidth = rect.width / 2;
+
+      if (x - halfWidth < padding) {
+        x = halfWidth + padding;
+      } else if (x + halfWidth > window.innerWidth - padding) {
+        x = window.innerWidth - halfWidth - padding;
+      }
+
+      tooltip.style.left = `${x}px`;
+      tooltip.style.top = `${y}px`;
+    };
+
+    document.querySelectorAll('[data-tooltip]').forEach(el => {
+      el.addEventListener('mouseenter', (e) => {
+        const text = el.getAttribute('data-tooltip');
+        if (text) {
+          tooltip.textContent = text;
+          tooltip.classList.remove('hidden');
+          updateTooltipPosition(e);
+        }
+      });
+      el.addEventListener('mousemove', (e) => updateTooltipPosition(e));
+      el.addEventListener('mouseleave', () => tooltip.classList.add('hidden'));
+    });
+
     document.querySelectorAll('.tower-btn').forEach(btn => {
       btn.addEventListener('click', () => {
         this.deselectTower();
         document.querySelectorAll('.tower-btn').forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
         this.selectedTowerType = btn.dataset.tower;
-      });
-
-      btn.addEventListener('mouseenter', (e) => {
-        const text = btn.getAttribute('data-tooltip');
-        if (text) {
-          tooltip.textContent = text;
-          tooltip.classList.remove('hidden');
-        }
-      });
-
-      btn.addEventListener('mousemove', (e) => {
-        tooltip.style.left = e.clientX + 'px';
-        tooltip.style.top = (e.clientY - 10) + 'px';
-      });
-
-      btn.addEventListener('mouseleave', () => {
-        tooltip.classList.add('hidden');
       });
     });
 
@@ -155,7 +178,6 @@ class Game {
 
     const speedBtn = document.getElementById('btn-speed');
     if (speedBtn) {
-      speedBtn.title = "Left-click: Speed Up | Right-click: Slow Down";
       speedBtn.addEventListener('click', () => {
         this.gameSpeed = Math.min(10, this.gameSpeed + 1);
         document.getElementById('speed-label').textContent = `SPEED: x${this.gameSpeed}`;
