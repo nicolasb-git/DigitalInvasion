@@ -437,6 +437,7 @@ class Game {
 
     this.sfxVolume = 0.2;
     this.sfxDestroySrc = '/wave1.wav';
+    this.sfxFragmenterSrc = '/fragmenter.wav';
 
     // Start background music on first interaction (browser policy)
     const startMusic = () => {
@@ -914,6 +915,7 @@ class Game {
 
         // Special logic for Fragmenter split
         if (e.isFragmenter) {
+          this.playSFX(this.sfxFragmenterSrc);
           for (let j = 0; j < 3; j++) {
             const fragment = new Enemy(e.path, this.wave, 'fragment');
             // Start from current position and target
