@@ -27,7 +27,7 @@ export class Enemy {
             this.reward = (10 + level) * 15;
             
             // Random boss power
-            const powers = ['ram_drainer'];
+            const powers = ['ram_drainer', 'tower_degrader'];
             this.bossPower = powers[Math.floor(Math.random() * powers.length)];
         } else if (this.isResistant) {
             hpMult = 1.5;
@@ -127,6 +127,8 @@ export class Enemy {
             ctx.arc(this.pos.x, this.pos.y, this.radius + 10 + pulse, 0, Math.PI * 2);
             if (this.bossPower === 'ram_drainer') {
                 ctx.fillStyle = 'rgba(255, 0, 0, 0.3)'; // Red glow for drainer
+            } else if (this.bossPower === 'tower_degrader') {
+                ctx.fillStyle = 'rgba(191, 0, 255, 0.3)'; // Purple glow for degrader
             } else {
                 ctx.fillStyle = 'rgba(255, 255, 255, 0.3)';
             }

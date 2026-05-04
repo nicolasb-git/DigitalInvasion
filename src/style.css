@@ -959,3 +959,19 @@ body {
   50% { box-shadow: 0 0 20px rgba(255, 0, 0, 0.6); }
   100% { box-shadow: 0 0 5px rgba(255, 0, 0, 0.2); }
 }
+
+#hack-debuff {
+  background: rgba(191, 0, 255, 0.2);
+  border-color: #bf00ff;
+  animation: pulse-purple 2s infinite;
+}
+
+#hack-debuff .debuff-label {
+  color: #bf00ff;
+}
+
+@keyframes pulse-purple {
+  0% { box-shadow: 0 0 5px rgba(191, 0, 255, 0.2); }
+  50% { box-shadow: 0 0 20px rgba(191, 0, 255, 0.6); }
+  100% { box-shadow: 0 0 5px rgba(191, 0, 255, 0.2); }
+}

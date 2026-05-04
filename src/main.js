@@ -23,6 +23,7 @@ class Game {
     this.enemies = [];
     this.towers = [];
     this.projectiles = [];
+    this.lasers = [];
     this.floatingTexts = [];
     this.particles = [];
 
@@ -882,23 +883,70 @@ class Game {
     // Boss Power: RAM Drainer
     if (this.frameCount % 60 === 0) {
       let activeDrainers = 0;
+      let activeDegraders = 0;
+
       for (const enemy of this.enemies) {
-        if (enemy.isBoss && enemy.bossPower === 'ram_drainer') {
-          activeDrainers++;
+        if (enemy.isBoss) {
+          if (enemy.bossPower === 'ram_drainer') activeDrainers++;
+          if (enemy.bossPower === 'tower_degrader') activeDegraders++;
         }
       }
 
+      // Handle RAM Drain
       if (activeDrainers > 0) {
         this.credits = Math.max(0, this.credits - (100 * activeDrainers));
-        this.updateUI(); // Reflect credit change
+        this.updateUI();
+        this.showMessage("SYSTEM MEMORY DRAINING...", 1000); // Shorter duration to avoid overlap
+        document.getElementById('drain-debuff').classList.remove('hidden');
+      } else {
+        document.getElementById('drain-debuff').classList.add('hidden');
+      }
+
+      // Handle Tower Degrade
+      if (activeDegraders > 0) {
+        // Shooting logic moved inside the loop for each boss to allow stacking if multiple bosses exist
+        for (const enemy of this.enemies) {
+          if (enemy.isBoss && enemy.bossPower === 'tower_degrader') {
+            const validTowers = this.towers.filter(t => t.isUpgradable());
+            if (validTowers.length > 0) {
+              const targetTower = validTowers[Math.floor(Math.random() * validTowers.length)];
+              this.lasers.push({
+                x1: enemy.pos.x, y1: enemy.pos.y,
+                x2: targetTower.pos.x, y2: targetTower.pos.y,
+                life: 30, color: '#bf00ff'
+              });
+              targetTower.level--;
+              if (targetTower.level <= 0) {
+                this.grid[targetTower.gridY][targetTower.gridX] = 0;
+                this.towers = this.towers.filter(t => t !== targetTower);
+                this.updateBuffs();
+                this.currentPath = findPath(this.start, this.end, this.grid, COLS, ROWS);
+                this.enemies.forEach(e => {
+                  const gridPos = Vector.toGrid(e.pos.x, e.pos.y);
+                  e.setPath(findPath(gridPos, this.end, this.grid, COLS, ROWS));
+                });
+                this.showMessage("TOWER DESTROYED BY BOSS!");
+              } else {
+                const configs = { basic: 5, fast: 4, heavy: 70 };
+                targetTower.damage = configs[targetTower.type] * Math.pow(1.5, targetTower.level - 1);
+                this.showMessage("TOWER DEGRADED!");
+              }
+            }
+          }
+        }
+        document.getElementById('hack-debuff').classList.remove('hidden');
+      } else {
+        document.getElementById('hack-debuff').classList.add('hidden');
+      }
+
+      // Final Container visibility
+      if (activeDrainers > 0 || activeDegraders > 0) {
         document.getElementById('debuff-container').classList.remove('hidden');
       } else {
-        const debuffContainer = document.getElementById('debuff-container');
-        if (debuffContainer && !debuffContainer.classList.contains('hidden')) {
-          debuffContainer.classList.add('hidden');
-        }
+        document.getElementById('debuff-container').classList.add('hidden');
       }
     }
+
     // Update Towers
     this.towers.forEach(t => {
       const generated = t.update(this.enemies, this.projectiles);
@@ -1016,6 +1064,21 @@ class Game {
 
     // Draw Projectiles
     this.projectiles.forEach(p => p.draw(this.ctx));
+
+    // Draw Lasers
+    this.lasers.forEach(l => {
+      this.ctx.save();
+      this.ctx.beginPath();
+      this.ctx.moveTo(l.x1, l.y1);
+      this.ctx.lineTo(l.x2, l.y2);
+      this.ctx.strokeStyle = l.color;
+      this.ctx.lineWidth = 2;
+      this.ctx.globalAlpha = l.life / 30;
+      this.ctx.shadowBlur = 10;
+      this.ctx.shadowColor = l.color;
+      this.ctx.stroke();
+      this.ctx.restore();
+    });
 
     // Draw Floating Texts
     this.floatingTexts.forEach(ft => {
@@ -1151,6 +1214,12 @@ class Game {
 
     if (this.screenShake > 0) this.screenShake--;
     if (this.glitchFlash > 0) this.glitchFlash--;
+
+    // Update Lasers
+    for (let i = this.lasers.length - 1; i >= 0; i--) {
+      this.lasers[i].life--;
+      if (this.lasers[i].life <= 0) this.lasers.splice(i, 1);
+    }
 
     // Update Particles
     for (let i = this.particles.length - 1; i >= 0; i--) {
