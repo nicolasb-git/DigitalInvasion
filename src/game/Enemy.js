@@ -16,12 +16,19 @@ export class Enemy {
 
         let hpMult = 1;
         let speedMult = 1;
+        this.bossPower = null;
+        this.bossPowerGlowTime = 0; // For pulsing glow effect
+
         if (this.isBoss) {
             hpMult = 5;
             speedMult = 0.6;
             this.color = '#faff00'; // Toxic Yellow
             this.radius = 20;
             this.reward = (10 + level) * 15;
+            
+            // Random boss power
+            const powers = ['ram_drainer'];
+            this.bossPower = powers[Math.floor(Math.random() * powers.length)];
         } else if (this.isResistant) {
             hpMult = 1.5;
             speedMult = 0.8;
@@ -63,6 +70,10 @@ export class Enemy {
 
     update() {
         if (this.dead || this.reachedEnd) return;
+
+        if (this.bossPower) {
+            this.bossPowerGlowTime += 0.05;
+        }
 
         const dir = this.target.sub(this.pos).normalize();
         const currentSpeed = this.slowed ? this.speed * 0.5 : this.speed;
@@ -109,6 +120,19 @@ export class Enemy {
 
     draw(ctx) {
         ctx.save();
+        
+        if (this.bossPower) {
+            ctx.beginPath();
+            const pulse = Math.sin(this.bossPowerGlowTime) * 5;
+            ctx.arc(this.pos.x, this.pos.y, this.radius + 10 + pulse, 0, Math.PI * 2);
+            if (this.bossPower === 'ram_drainer') {
+                ctx.fillStyle = 'rgba(255, 0, 0, 0.3)'; // Red glow for drainer
+            } else {
+                ctx.fillStyle = 'rgba(255, 255, 255, 0.3)';
+            }
+            ctx.fill();
+        }
+
         ctx.beginPath();
         ctx.arc(this.pos.x, this.pos.y, this.radius, 0, Math.PI * 2);
         ctx.fillStyle = this.color;

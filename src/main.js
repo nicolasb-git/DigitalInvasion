@@ -47,6 +47,7 @@ class Game {
     this.glitchFlash = 0;
     this.showPath = true;
     this.hoveredTower = null;
+    this.frameCount = 0;
 
     this.started = false;
     this.highScores = JSON.parse(localStorage.getItem('digital_invasion_scores') || '[]');
@@ -876,6 +877,28 @@ class Game {
   }
 
   update() {
+    this.frameCount++;
+
+    // Boss Power: RAM Drainer
+    if (this.frameCount % 60 === 0) {
+      let activeDrainers = 0;
+      for (const enemy of this.enemies) {
+        if (enemy.isBoss && enemy.bossPower === 'ram_drainer') {
+          activeDrainers++;
+        }
+      }
+
+      if (activeDrainers > 0) {
+        this.credits = Math.max(0, this.credits - (100 * activeDrainers));
+        this.updateUI(); // Reflect credit change
+        document.getElementById('debuff-container').classList.remove('hidden');
+      } else {
+        const debuffContainer = document.getElementById('debuff-container');
+        if (debuffContainer && !debuffContainer.classList.contains('hidden')) {
+          debuffContainer.classList.add('hidden');
+        }
+      }
+    }
     // Update Towers
     this.towers.forEach(t => {
       const generated = t.update(this.enemies, this.projectiles);

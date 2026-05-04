@@ -912,3 +912,50 @@ body {
   text-align: center;
   transform: translate(-50%, -110%);
 }
+
+#debuff-container {
+  position: absolute;
+  top: 50%;
+  left: 20px;
+  transform: translateY(-50%);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  pointer-events: auto;
+  z-index: 100;
+}
+
+#debuff-container.hidden {
+  display: none !important;
+}
+
+.debuff-icon {
+  background: rgba(255, 0, 0, 0.2);
+  border: 1px solid var(--accent);
+  border-radius: 8px;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  box-shadow: 0 0 15px rgba(255, 0, 0, 0.4);
+  animation: pulse-red 2s infinite;
+  cursor: help;
+}
+
+.debuff-icon .icon {
+  font-size: 1.5rem;
+}
+
+.debuff-icon .debuff-label {
+  font-family: var(--font-header);
+  font-size: 0.7rem;
+  color: var(--accent);
+  margin-top: 5px;
+  letter-spacing: 1px;
+}
+
+@keyframes pulse-red {
+  0% { box-shadow: 0 0 5px rgba(255, 0, 0, 0.2); }
+  50% { box-shadow: 0 0 20px rgba(255, 0, 0, 0.6); }
+  100% { box-shadow: 0 0 5px rgba(255, 0, 0, 0.2); }
+}
