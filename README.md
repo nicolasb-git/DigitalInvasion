@@ -62,7 +62,13 @@ Combat modules (**Packet Filter, Scan Decryptor, Logic Bomb**) can be upgraded t
 - **Nitro Magenta (Quick)**: Rapid-fire script kits. Hard to track, low HP.
 - **Zip Orange (Fragmenter)**: High computational density. Splinters into 3 tiny fragments when neutralized.
 - **White Bit (Fragment)**: Highly volatile micro-threats. Extremely fast, low HP.
-- **Toxic Yellow (Boss)**: Massive system-wide breaches. High HP, deals 5x damage to integrity. Spawns every 5 waves.
+- **Toxic Yellow (Boss)**: Massive system-wide breaches. High HP, deals 5x damage to integrity. Spawns every 5 waves and possesses a random **Boss Power**.
+
+### ⚡ Boss Powers
+Each boss spawns with a unique, randomized passive or active power that alters the battlefield:
+- **RAM Drainer**: Emits a system-wide leak, draining **100MB of Memory per second**. Indicated by a **Red Pulsing Aura**.
+- **Tower Degrader**: Fires a **Purple Laser** every **2 seconds** at a random combat module, reducing its level by 1. If a level 1 tower is hit, it is permanently destroyed.
+- *Note: Boss powers trigger active debuff icons and system-wide "MESSAGE ALERTS" to notify the operator.*
 
 ---
 

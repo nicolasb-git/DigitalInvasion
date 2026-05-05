@@ -880,7 +880,7 @@ class Game {
   update() {
     this.frameCount++;
 
-    // Boss Power: RAM Drainer
+    // Boss Power Processing
     if (this.frameCount % 60 === 0) {
       let activeDrainers = 0;
       let activeDegraders = 0;
@@ -892,48 +892,18 @@ class Game {
         }
       }
 
-      // Handle RAM Drain
+      // Handle RAM Drain (Every 1 second)
       if (activeDrainers > 0) {
         this.credits = Math.max(0, this.credits - (100 * activeDrainers));
         this.updateUI();
-        this.showMessage("SYSTEM MEMORY DRAINING...", 1000); // Shorter duration to avoid overlap
+        this.showMessage("SYSTEM MEMORY DRAINING...", 1000);
         document.getElementById('drain-debuff').classList.remove('hidden');
       } else {
         document.getElementById('drain-debuff').classList.add('hidden');
       }
 
-      // Handle Tower Degrade
+      // Handle Tower Degrade (Logic moved below for 2-second interval)
       if (activeDegraders > 0) {
-        // Shooting logic moved inside the loop for each boss to allow stacking if multiple bosses exist
-        for (const enemy of this.enemies) {
-          if (enemy.isBoss && enemy.bossPower === 'tower_degrader') {
-            const validTowers = this.towers.filter(t => t.isUpgradable());
-            if (validTowers.length > 0) {
-              const targetTower = validTowers[Math.floor(Math.random() * validTowers.length)];
-              this.lasers.push({
-                x1: enemy.pos.x, y1: enemy.pos.y,
-                x2: targetTower.pos.x, y2: targetTower.pos.y,
-                life: 30, color: '#bf00ff'
-              });
-              targetTower.level--;
-              if (targetTower.level <= 0) {
-                this.grid[targetTower.gridY][targetTower.gridX] = 0;
-                this.towers = this.towers.filter(t => t !== targetTower);
-                this.updateBuffs();
-                this.currentPath = findPath(this.start, this.end, this.grid, COLS, ROWS);
-                this.enemies.forEach(e => {
-                  const gridPos = Vector.toGrid(e.pos.x, e.pos.y);
-                  e.setPath(findPath(gridPos, this.end, this.grid, COLS, ROWS));
-                });
-                this.showMessage("TOWER DESTROYED BY BOSS!");
-              } else {
-                const configs = { basic: 5, fast: 4, heavy: 70 };
-                targetTower.damage = configs[targetTower.type] * Math.pow(1.5, targetTower.level - 1);
-                this.showMessage("TOWER DEGRADED!");
-              }
-            }
-          }
-        }
         document.getElementById('hack-debuff').classList.remove('hidden');
       } else {
         document.getElementById('hack-debuff').classList.add('hidden');
@@ -944,6 +914,39 @@ class Game {
         document.getElementById('debuff-container').classList.remove('hidden');
       } else {
         document.getElementById('debuff-container').classList.add('hidden');
+      }
+    }
+
+    // Handle Tower Degrade (Every 2 seconds)
+    if (this.frameCount % 120 === 0) {
+      for (const enemy of this.enemies) {
+        if (enemy.isBoss && enemy.bossPower === 'tower_degrader') {
+          const validTowers = this.towers.filter(t => t.isUpgradable());
+          if (validTowers.length > 0) {
+            const targetTower = validTowers[Math.floor(Math.random() * validTowers.length)];
+            this.lasers.push({
+              x1: enemy.pos.x, y1: enemy.pos.y,
+              x2: targetTower.pos.x, y2: targetTower.pos.y,
+              life: 30, color: '#bf00ff'
+            });
+            targetTower.level--;
+            if (targetTower.level <= 0) {
+              this.grid[targetTower.gridY][targetTower.gridX] = 0;
+              this.towers = this.towers.filter(t => t !== targetTower);
+              this.updateBuffs();
+              this.currentPath = findPath(this.start, this.end, this.grid, COLS, ROWS);
+              this.enemies.forEach(e => {
+                const gridPos = Vector.toGrid(e.pos.x, e.pos.y);
+                e.setPath(findPath(gridPos, this.end, this.grid, COLS, ROWS));
+              });
+              this.showMessage("TOWER DESTROYED BY BOSS!");
+            } else {
+              const configs = { basic: 5, fast: 4, heavy: 70 };
+              targetTower.damage = configs[targetTower.type] * Math.pow(1.5, targetTower.level - 1);
+              this.showMessage("TOWER DEGRADED!");
+            }
+          }
+        }
       }
     }
 
