@@ -894,7 +894,7 @@ class Game {
 
       // Handle RAM Drain (Every 1 second)
       if (activeDrainers > 0) {
-        this.credits = Math.max(0, this.credits - (100 * activeDrainers));
+        this.credits = Math.max(0, this.credits - (400 * activeDrainers));
         this.updateUI();
         this.showMessage("SYSTEM MEMORY DRAINING...", 1000);
         document.getElementById('drain-debuff').classList.remove('hidden');

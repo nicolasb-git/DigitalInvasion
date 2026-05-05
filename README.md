@@ -66,8 +66,8 @@ Combat modules (**Packet Filter, Scan Decryptor, Logic Bomb**) can be upgraded t
 
 ### ⚡ Boss Powers
 Each boss spawns with a unique, randomized passive or active power that alters the battlefield:
-- **RAM Drainer**: Emits a system-wide leak, draining **100MB of Memory per second**. Indicated by a **Red Pulsing Aura**.
-- **Tower Degrader**: Fires a **Purple Laser** every **2 seconds** at a random combat module, reducing its level by 1. If a level 1 tower is hit, it is permanently destroyed.
+- **RAM Drainer**: Emits a system-wide leak, draining **400MB of Memory per second**. Indicated by a **Red Pulsing Aura**.
+- **Tower Degrader**: Fires a **Purple Laser** every 2 seconds at a random combat module, reducing its level by 1. If a level 1 tower is hit, it is permanently destroyed.
 - *Note: Boss powers trigger active debuff icons and system-wide "MESSAGE ALERTS" to notify the operator.*
 
 ---
